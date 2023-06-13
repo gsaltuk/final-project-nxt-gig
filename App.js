@@ -5,6 +5,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Welcome from './screens/Welcome';
+import LoginForm from './screens/Login';
+import SignUpForm from './screens/SignUp';
 
 const Stack = createNativeStackNavigator()
 
@@ -13,16 +15,9 @@ export default function App() {
     <NavigationContainer>
    <Stack.Navigator>
     <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
+    <Stack.Screen name="Login" component={LoginForm}></Stack.Screen>
+    <Stack.Screen name="Signup Form" component={SignUpForm}></Stack.Screen>
    </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
