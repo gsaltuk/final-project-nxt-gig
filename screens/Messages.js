@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Conversations = () => {
+const Messages = () => {
   return (
     <View>
-      <Text>Conversations</Text>
+      <Text>Messages</Text>
     </View>
   )
 }
 
-export default Conversations
+export default Messages
 
 const styles = StyleSheet.create({})

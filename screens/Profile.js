@@ -1,3 +1,4 @@
+
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import styles from "../styles/styles";
 import { useContext, useState, useEffect } from "react";
@@ -48,3 +49,4 @@ return (
   );
   
 }
+
