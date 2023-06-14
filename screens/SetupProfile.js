@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Text, View, TextInput, Button, KeyboardAvoidingView, Platform } from "react-native";
 import { firebase } from "../backend/firebase-config";
 import styles from "../styles/styles";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, serverTimestamp } from "@firebase/firestore";
+
 
 
 
@@ -29,15 +30,15 @@ export default function SetupProfile({navigation}) {
     // real-time collection data
     const handleSubmit = (e) => {
         e.preventDefault()
-        addDoc(colRef, formData)
+        addDoc(colRef, { ...formData, created_at: serverTimestamp()})
         .then(() => {
             setFormData({
-                username: '',
-                firstName: '',
-                lastName: '',
-                dob: '',
-                city: '',
-                bio: ''
+                "username": '',
+                "first-name": '',
+                "last-name": '',
+                "dob": '',
+                "city": '',
+                "bio": ''
             })
             navigation.navigate("Home")
         })
@@ -66,7 +67,6 @@ export default function SetupProfile({navigation}) {
                 placeholder="username"
                 value={formData.username}
                 onChangeText={value => handleInputChange('username', value)}
-                required
                 />
                 <TextInput
                 style={styles.input}
