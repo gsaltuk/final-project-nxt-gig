@@ -39,6 +39,13 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
   },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    alignSelf: "center",
+    marginBottom: 10,
+  }
 });
 
 
