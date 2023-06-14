@@ -4,6 +4,8 @@ import { firebase } from "../backend/firebase-config";
 import styles from "../styles/styles";
 import { getFirestore, collection, addDoc, serverTimestamp } from "@firebase/firestore";
 import UserContext from "../context/user-context";
+import DateTimePicker from "@react-native-community/datetimepicker"
+
 
 
 
@@ -19,8 +21,29 @@ export default function SetupProfile({navigation}) {
     })
 
     const { user } = useContext(UserContext)
-    console.log(user.user.uid)
+    // console.log(user.user.uid)
 
+    //Date Time Picker
+    const [date, setDate] = useState(new Date());
+    const [showPicker, setShowPicker] = useState(false);
+
+    const handleChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShowPicker(Platform.OS === 'ios');
+        setDate(currentDate);
+        // hideDateTimePicker();
+    };
+
+
+    const showDateTimePicker = () => {
+        setShowPicker(true);
+    };
+
+
+    // const hideDateTimePicker = () => {
+    //     setShowPicker(false);
+    // };
+    
 
 
     // Init services
@@ -95,12 +118,6 @@ export default function SetupProfile({navigation}) {
                 />
                 <TextInput
                 style={styles.input}
-                placeholder="Date of Birth"
-                value={formData.dob}
-                onChangeText={value => handleInputChange('dob', value)}
-                />
-                <TextInput
-                style={styles.input}
                 placeholder="City"
                 value={formData.city}
                 onChangeText={value => handleInputChange('city', value)}
@@ -111,8 +128,27 @@ export default function SetupProfile({navigation}) {
                 value={formData.bio}
                 onChangeText={value => handleInputChange('bio', value)}
                 />
+                <Button title="Select Date of Birth" onPress={showDateTimePicker} />
+                {showPicker && (
+                    <DateTimePicker
+                    value={date}
+                    mode="datetime"
+                    is24Hour="default"
+                    onChange={handleChange}
+                    />
+                )}
                 <Button title="Submit" onPress={handleSubmit} />
             </View>
             </KeyboardAvoidingView>
         )
 }
+
+
+
+
+// //<TextInput
+// style={styles.input}
+// placeholder="Date of Birth"
+// value={formData.dob}
+// onChangeText={value => handleInputChange('dob', value)}
+// />
