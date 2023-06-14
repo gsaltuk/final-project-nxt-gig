@@ -4,16 +4,11 @@ import styles from "../styles/styles";
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
 } from "firebase/auth";
 import { firebase } from "../backend/firebase-config";
 import UserContext from "../context/user-context";
 
 
-// const provider = new GoogleAuthProvider();
-
-// const signInWithGoogle = () => signInWithPopup(provider);
 export default function SignUpForm({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
