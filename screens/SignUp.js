@@ -9,13 +9,14 @@ import {
 } from "firebase/auth";
 import { firebase } from "../backend/firebase-config";
 
-const provider = new GoogleAuthProvider();
+// const provider = new GoogleAuthProvider();
 
-const signInWithGoogle = () => signInWithPopup(provider);
-export default function SignUpForm({ navigation }, user, setUser) {
+// const signInWithGoogle = () => signInWithPopup(provider);
+export default function SignUpForm({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  console.log(setUser);
   const handleEmailChange = (text) => {
     setEmail(text);
   };
@@ -26,7 +27,7 @@ export default function SignUpForm({ navigation }, user, setUser) {
 
   const handleSignup = async () => {
     try {
-      const authInstance = getAuth(); 
+      const authInstance = getAuth();
       await createUserWithEmailAndPassword(authInstance, email, password).then(
         (userSignedUp) => {
           setUser(userSignedUp);
