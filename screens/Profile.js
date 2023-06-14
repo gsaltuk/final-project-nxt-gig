@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Text, View, TouchableOpacity, Image } from "react-native";
 import styles from "../styles/styles";
 import { useContext, useState, useEffect } from "react";
 import UserContext from "../context/user-context";
@@ -24,16 +24,27 @@ export default function Profile({ navigation }) {
     return () => unsubscribe();
   }, []);
 
-  return (
-    <View>
-      <Text>On Profile Page</Text>
-      <>
-        <Text>Username: {userProfileInfo.username}</Text>
-        <Text>First Name: {userProfileInfo["first-name"]}</Text>
-        <Text>Last Name: {userProfileInfo["last-name"]}</Text>
-        <Text>City: {userProfileInfo.city}</Text>
-        <Text>Bio: {userProfileInfo.bio}</Text>
-      </>
+function handleEdit() {
+    navigation.navigate("EditProfile")
+}
+
+return (
+    <View style={styles.container}>
+      
+        <Image
+          source={{uri: "https://pluralsight.imgix.net/author/default.jpg"}}
+          style={styles.profileImage}
+        />
+      
+      <Text>{userProfileInfo.username}</Text>
+      <Text>First Name: {userProfileInfo["first-name"]}</Text>
+      <Text>Last Name: {userProfileInfo["last-name"]}</Text>
+      <Text>City: {userProfileInfo.city}</Text>
+      <Text>Bio: {userProfileInfo.bio}</Text>
+      <TouchableOpacity onPress={handleEdit} style={styles.button}>
+        <Text style={styles.button}>EDIT PROFILE</Text>
+      </TouchableOpacity>
     </View>
   );
+  
 }
