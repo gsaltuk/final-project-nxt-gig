@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import UserContext from './context/user-context';
 
 import Welcome from './screens/Welcome';
 import LoginForm from './screens/Login';
@@ -16,6 +17,7 @@ export default function App() {
   const [user, setUser] = useState("")
 
   return (
+    <UserContext.Provider value={{user, setUser}}>
     <NavigationContainer>
    <Stack.Navigator>
     <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
@@ -24,5 +26,6 @@ export default function App() {
     <Stack.Screen name="SetupProfile" component={SetupProfile}></Stack.Screen>
    </Stack.Navigator>
     </NavigationContainer>
+    </UserContext.Provider>
   );
 }

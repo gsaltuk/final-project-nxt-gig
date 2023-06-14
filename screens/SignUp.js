@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Text, View, TextInput, Button } from "react-native";
 import styles from "../styles/styles";
 import {
@@ -8,6 +8,8 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { firebase } from "../backend/firebase-config";
+import UserContext from "../context/user-context";
+
 
 // const provider = new GoogleAuthProvider();
 
@@ -15,8 +17,8 @@ import { firebase } from "../backend/firebase-config";
 export default function SignUpForm({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const {user, setUser} = useContext(UserContext)
 
-  console.log(setUser);
   const handleEmailChange = (text) => {
     setEmail(text);
   };
