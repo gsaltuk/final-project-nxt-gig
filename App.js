@@ -12,12 +12,14 @@ import SetupProfile from './screens/SetupProfile';
 const Stack = createNativeStackNavigator()
 
 export default function App() {
+  const [user, setUser] = React.useState("")
+
   return (
     <NavigationContainer>
    <Stack.Navigator>
     <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
     <Stack.Screen name="Login" component={LoginForm}></Stack.Screen>
-    <Stack.Screen name="Signup Form" component={SignUpForm}></Stack.Screen>
+    <Stack.Screen name="Signup Form" component={SignUpForm} user={user} setUser={setUser}></Stack.Screen>
     <Stack.Screen name="SetupProfile" component={SetupProfile}></Stack.Screen>
    </Stack.Navigator>
     </NavigationContainer>
