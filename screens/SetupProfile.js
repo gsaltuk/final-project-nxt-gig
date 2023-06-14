@@ -9,6 +9,7 @@ import DateTimePicker from "@react-native-community/datetimepicker"
 
 
 
+export const db = getFirestore();
 
 export default function SetupProfile({navigation}) {
     const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ export default function SetupProfile({navigation}) {
     })
 
     const { user } = useContext(UserContext)
-    // console.log(user.user.uid)
+
 
     //Date Time Picker
     const [date, setDate] = useState(new Date());
@@ -33,6 +34,9 @@ export default function SetupProfile({navigation}) {
         setDate(currentDate);
         // hideDateTimePicker();
     };
+
+   
+
 
 
     const showDateTimePicker = () => {
@@ -47,7 +51,7 @@ export default function SetupProfile({navigation}) {
 
 
     // Init services
-    const db = getFirestore();
+
     
 
     // collection ref
@@ -76,7 +80,7 @@ export default function SetupProfile({navigation}) {
                 "city": '',
                 "bio": ''
             })
-            navigation.navigate("Home")
+            navigation.navigate("Profile")
         })
     }
 
@@ -146,9 +150,11 @@ export default function SetupProfile({navigation}) {
 
 
 
+
 // //<TextInput
 // style={styles.input}
 // placeholder="Date of Birth"
 // value={formData.dob}
 // onChangeText={value => handleInputChange('dob', value)}
 // />
+
