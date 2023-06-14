@@ -34,6 +34,15 @@ export default function SetupProfile({navigation}) {
     // real-time collection data
     const handleSubmit = (e) => {
         e.preventDefault()
+
+    // Check if required fields are filled
+    const requiredFields = ['username', 'first-name', 'last-name', 'dob', 'city', 'bio'] ;
+    const isFormValid = requiredFields.every((field) => formData[field].trim() !== '');
+    
+    if (!isFormValid) {
+        alert('Please fill in all required fields');
+        return;
+    }
         addDoc(colRef, { ...formData, created_at: serverTimestamp(), uid: user.user.uid})
         .then(() => {
             setFormData({
