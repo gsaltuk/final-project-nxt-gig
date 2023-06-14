@@ -24,13 +24,14 @@ export default function App() {
     <UserContext.Provider value={{user, setUser}}>
     <NavigationContainer>
    <Stack.Navigator>
+    <Stack.Screen name="SetupProfile" component={SetupProfile}></Stack.Screen>
+    <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
+    <Stack.Screen name="Signup Form" component={SignUpForm}></Stack.Screen>
    <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
     <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
     <Stack.Screen name="Signup Form" component={SignUpForm}></Stack.Screen>
-    <Stack.Screen name="SetupProfile" component={SetupProfile}></Stack.Screen>
     <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
     <Stack.Screen name="Login" component={LoginForm}></Stack.Screen>
-    
    <Stack.Screen name="Home" component={Home}></Stack.Screen>
    </Stack.Navigator>
     </NavigationContainer>
