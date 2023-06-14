@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffffff", // Set the background color of the container
+    
   },
   buttonContainer: {
     width: "75%",
@@ -29,7 +30,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: "white",
     marginTop: 5,
-    borderRadius: 10,
+    borderRadius: 7,
+    borderWidth:1,
+    borderColor: "#eee",
+    width:330,
+    height: 40,
   },
   text: {
     textAlign: "center",
