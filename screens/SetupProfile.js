@@ -19,7 +19,7 @@ export default function SetupProfile({navigation}) {
     })
 
     const { user } = useContext(UserContext)
-    console.log(user.user.uid)
+   
 
 
 
