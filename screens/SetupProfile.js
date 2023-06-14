@@ -7,6 +7,7 @@ import UserContext from "../context/user-context";
 
 
 
+export const db = getFirestore();
 
 export default function SetupProfile({navigation}) {
     const [formData, setFormData] = useState({
@@ -24,7 +25,7 @@ export default function SetupProfile({navigation}) {
 
 
     // Init services
-    const db = getFirestore();
+
     
 
     // collection ref
@@ -44,7 +45,7 @@ export default function SetupProfile({navigation}) {
                 "city": '',
                 "bio": ''
             })
-            navigation.navigate("Home")
+            navigation.navigate("Profile")
         })
     }
 
@@ -107,3 +108,4 @@ export default function SetupProfile({navigation}) {
             </KeyboardAvoidingView>
         )
 }
+

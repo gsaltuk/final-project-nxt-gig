@@ -11,7 +11,7 @@ import LoginForm from './screens/Login';
 import SignUpForm from './screens/SignUp';
 import SetupProfile from './screens/SetupProfile';
 import Home from './screens/Home';
-import Profile from './screens/EditProfile';
+import Profile from './screens/Profile';
 
 
 const Stack = createNativeStackNavigator()
@@ -23,11 +23,12 @@ export default function App() {
     <UserContext.Provider value={{user, setUser}}>
     <NavigationContainer>
    <Stack.Navigator>
+   <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
     <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
     <Stack.Screen name="Signup Form" component={SignUpForm}></Stack.Screen>
     <Stack.Screen name="SetupProfile" component={SetupProfile}></Stack.Screen>
     <Stack.Screen name="Login" component={LoginForm}></Stack.Screen>
-    <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
+    
    <Stack.Screen name="Home" component={Home}></Stack.Screen>
    </Stack.Navigator>
     </NavigationContainer>
