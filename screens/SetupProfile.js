@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Text, View, TextInput, Button, KeyboardAvoidingView, Platform } from "react-native";
 import { firebase } from "../backend/firebase-config";
 import styles from "../styles/styles";
 import { getFirestore, collection, addDoc, serverTimestamp } from "@firebase/firestore";
+import UserContext from "../context/user-context";
 
 
 
@@ -15,7 +16,10 @@ export default function SetupProfile({navigation}) {
         dob: '',
         city: '',
         bio: ''
-    });
+    })
+
+    const { user } = useContext(UserContext)
+    console.log(user.user.uid)
 
 
 
@@ -30,7 +34,7 @@ export default function SetupProfile({navigation}) {
     // real-time collection data
     const handleSubmit = (e) => {
         e.preventDefault()
-        addDoc(colRef, { ...formData, created_at: serverTimestamp()})
+        addDoc(colRef, { ...formData, created_at: serverTimestamp(), uid: user.user.uid})
         .then(() => {
             setFormData({
                 "username": '',
