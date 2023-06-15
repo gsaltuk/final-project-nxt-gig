@@ -1,47 +1,80 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, FlatList, Image } from "react-native";
-import { firebase } from "../backend/firebase-config";
-import styles from "../styles/styles";
-import axios from 'axios';
-
-
-
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput } from 'react-native';
 
 export default function Artists() {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [artists, setArtists] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [artists, setArtists] = useState([]);
+  const [searchedArtists, setSearchedArtists] = useState([]);
+  const apiKey = '374a714c7bfd22d920627a094682d88d';
 
+  useEffect(() => {
+    fetch(`https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=${apiKey}&format=json&limit=9`)
+      .then((res) => res.json())
+      .then((response) => {
+        const { artist } = response.artists;
+        setArtists(artist);
+      })
+      .catch((error) => {
+        console.log('Error occurred:', error);
+      });
+  }, []);
 
-        useEffect(() => {
-            fetch(`https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=374a714c7bfd22d920627a094682d88d&format=json&limit=9`)
-            .then((res) => res.json())
-            .then((artists) => {
-                console.log(artists.artists.artist[1].image[0])
-            })
-            .catch((error) => {
-                console.log('Error occured', error);
-            })
-        }, [])
+  const searchArtist = (query) => {
+    setSearchQuery(query);
+  };
 
-        useEffect(() => {
-            fetch(`https://coverartarchive.org/release/b6e035f4-3ce9-331c-97df-83397230b0df/front`)
-            .then(res => {
-                return res.json()
-            }).then((artist) => {
-                console.log(artist)
-            })
-            .catch((error) => {
-                console.log('Error occured', error);
-            })
-        }, [])
-   
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${searchQuery}&api_key=${apiKey}&format=json&limit=3`)
+        .then((res) => res.json())
+        .then((response) => {
+          const { artistmatches } = response.results;
+          if (artistmatches.artist.length > 0) {
+            setSearchedArtists(artistmatches.artist);
+          } else {
+            setSearchedArtists([]);
+          }
+        })
+        .catch((error) => {
+          console.log('Error occurred:', error);
+        });
+    } else {
+      setSearchedArtists([]);
+    }
+  }, [searchQuery]);
 
-    return (
-        <View style={{ flex: 1, padding: 16 }}>
-            <FlatList
-            data={artists}
-            keyExtractor={(item) => item.id}
-            />
-        </View>
-    );
-};
+  useEffect(() => {
+    if (searchQuery.length === 0) {
+      fetch(`https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=${apiKey}&format=json&limit=9`)
+        .then((res) => res.json())
+        .then((response) => {
+          const { artist } = response.artists;
+          setArtists(artist);
+        })
+        .catch((error) => {
+          console.log('Error occurred:', error);
+        });
+    } else {
+      setArtists([]);
+    }
+  }, [searchQuery]);
+
+  return (
+    <View>
+      <TextInput
+        placeholder="Search artist"
+        value={searchQuery}
+        onChangeText={(text) => searchArtist(text)}
+      />
+      {searchQuery.length === 0 && artists.map((artist) => (
+        <Text key={artist.mbid}>{artist.name}</Text>
+      ))}
+      {searchQuery.length > 0 && searchedArtists.map((artist) => (
+        <Text key={artist.mbid}>{artist.name}</Text>
+      ))}
+      {searchedArtists.length === 0 && artists.length === 0 && searchQuery.length === 0 && (
+        <Text>No artists found</Text>
+      )}
+    </View>
+  );
+}
