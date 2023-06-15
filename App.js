@@ -13,6 +13,7 @@ import SetupProfile from './screens/SetupProfile';
 import Home from './screens/Home';
 import Profile from './screens/Profile';
 import EditProfile from './screens/EditProfile';
+import Artists from './screens/Artists';
 
 
 const Stack = createNativeStackNavigator()
@@ -24,6 +25,7 @@ export default function App() {
     <UserContext.Provider value={{user, setUser}}>
     <NavigationContainer>
    <Stack.Navigator>
+   <Stack.Screen name="Artists" component={Artists}></Stack.Screen>
     <Stack.Screen name="SetupProfile" component={SetupProfile}></Stack.Screen>
     <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
     <Stack.Screen name="Signup Form" component={SignUpForm}></Stack.Screen>
