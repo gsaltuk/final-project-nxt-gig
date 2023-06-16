@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput } from 'react-native';
 
@@ -78,3 +79,9 @@ export default function Artists() {
     </View>
   );
 }
+
+
+
+export default Artists
+
+
