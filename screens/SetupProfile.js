@@ -5,7 +5,7 @@ import styles from "../styles/styles";
 import { getFirestore, collection, addDoc, serverTimestamp } from "@firebase/firestore";
 import UserContext from "../context/user-context";
 
-
+export const db = getFirestore();
 
 
 export default function SetupProfile({navigation}) {
@@ -19,13 +19,7 @@ export default function SetupProfile({navigation}) {
     })
 
     const { user } = useContext(UserContext)
-    console.log(user.user.uid)
 
-
-
-    // Init services
-    const db = getFirestore();
-    
 
     // collection ref
     const colRef = collection(db, 'users');
@@ -107,3 +101,4 @@ export default function SetupProfile({navigation}) {
             </KeyboardAvoidingView>
         )
 }
+

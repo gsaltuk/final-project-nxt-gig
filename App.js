@@ -23,24 +23,26 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [user, setUser] = useState("");
+  const [currentUid, setCurrentUid] = useState("")
+
 
   return (
 
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, currentUid, setCurrentUid }}>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name="Home"
-            component={NavBar}
-          ></Stack.Screen>
           <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
-          <Stack.Screen name="SingleGig" component={SingleGig}></Stack.Screen>
           <Stack.Screen name="Login" component={LoginForm}></Stack.Screen>
           <Stack.Screen
             name="Signup-Form"
             component={SignUpForm}
           ></Stack.Screen>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Home"
+            component={NavBar}
+          ></Stack.Screen>
+          <Stack.Screen name="SingleGig" component={SingleGig}></Stack.Screen>
           <Stack.Screen
             name="SetupProfile"
             component={SetupProfile}

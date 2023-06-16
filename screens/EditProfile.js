@@ -8,12 +8,11 @@ import styles from "../styles/styles";
 export default function EditProfile({navigation}) {
   const [userProfileInfo, setUserProfileInfo] = useState({});
   const [userInput, setUserInput] = useState({});
-  const { user } = useContext(UserContext);
-  const testuid = "1jGxMQ2QypAGOdcryibr";
+  const { user, currentUid } = useContext(UserContext);
 
   useEffect(() => {
     const colRef = collection(db, "users");
-    const q = query(colRef, where("UID", "==", testuid));
+    const q = query(colRef, where("uid", "==", currentUid));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.forEach((doc) => {
@@ -25,7 +24,6 @@ export default function EditProfile({navigation}) {
 
     return () => unsubscribe();
   }, []);
-  console.log(userInput)
 
   const handleInputChange = (field, value) => {
     setUserInput(prevState => ({

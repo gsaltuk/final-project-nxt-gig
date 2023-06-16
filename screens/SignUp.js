@@ -9,7 +9,7 @@ import { TouchableOpacity, KeyboardAvoidingView } from "react-native";
 export default function SignUpForm({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, setCurrentUid } = useContext(UserContext);
 
   const handleEmailChange = (text) => {
     setEmail(text);
@@ -25,6 +25,7 @@ export default function SignUpForm({ navigation }) {
       await createUserWithEmailAndPassword(authInstance, email, password).then(
         (userSignedUp) => {
           setUser(userSignedUp);
+          setCurrentUid(userSignedUp.user.uid)
           navigation.navigate("SetupProfile");
         }
       );

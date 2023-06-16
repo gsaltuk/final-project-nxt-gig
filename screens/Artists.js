@@ -82,6 +82,3 @@ export default function Artists() {
 
 
 
-export default Artists
-
-
