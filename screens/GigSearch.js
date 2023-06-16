@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text } from 'react-native';
-import { stylesHome } from '../styles/styleHomePage';
-import GigsToday from './GigsToday';
-import GigsTomorrow from './GigsTomorrow';
+import React, { useState } from "react";
+import { View, TextInput } from "react-native";
+import { stylesHome } from "../styles/styleHomePage";
+import GigsTodayAndTomorrow from "./GigsTodayAndTomorrow";
 
-const GigSearch = ({ onSearch, onGigsToday, onGigsTomorrow, setSearchTerm, searchTerm }) => {
-  
+const GigSearch = ({
+  onSearch,
+  onGigsToday,
+  onGigsTomorrow,
+  setSearchTerm,
+  searchTerm,
+}) => {
   return (
     <View style={stylesHome.container}>
       <View style={stylesHome.searchContainer}>
@@ -15,10 +19,11 @@ const GigSearch = ({ onSearch, onGigsToday, onGigsTomorrow, setSearchTerm, searc
           value={searchTerm}
           onChangeText={setSearchTerm}
         />
-
       </View>
-      <GigsToday onGigsToday={onGigsToday} />
-      <GigsTomorrow onGigsTomorrow={onGigsTomorrow} />
+      <GigsTodayAndTomorrow
+        onGigsToday={onGigsToday}
+        onGigsTomorrow={onGigsTomorrow}
+      />
     </View>
   );
 };
