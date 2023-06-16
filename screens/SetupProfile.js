@@ -84,6 +84,7 @@ export default function SetupProfile({ navigation }) {
     addDoc(colRef, {
       ...formData,
       created_at: serverTimestamp(),
+      "fav-artists": [],
       uid: user.user.uid,
       dob: date,
     }).then(() => {
