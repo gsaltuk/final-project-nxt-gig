@@ -1,7 +1,11 @@
+
 import React, { useState } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import GigSearch from "./GigSearch";
 import GigList from "./GigList";
+
+
+
 
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -97,8 +101,11 @@ const Home = () => {
       />
       <GigList gigs={gigs} />
     </View>
+
   );
 };
 
 export default Home;
+
+
 

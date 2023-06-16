@@ -34,7 +34,7 @@ export default function SetupProfile({navigation}) {
     // real-time collection data
     const handleSubmit = (e) => {
         e.preventDefault()
-        addDoc(colRef, { ...formData, created_at: serverTimestamp(), uid: user.user.uid})
+        addDoc(colRef, { ...formData, created_at: serverTimestamp(), "fav-artists": [], uid: user.user.uid})
         .then(() => {
             setFormData({
                 "username": '',
