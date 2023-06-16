@@ -1,13 +1,101 @@
-import React from 'react';
-import { View } from 'react-native';
-import GigSearch from './GigSearch'
-import GigList from './GigList';
+import React, { useState } from "react";
+import { View } from "react-native";
+import GigSearch from "./GigSearch";
+import GigList from "./GigList";
 
-const Home= () => {
+const Home = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [gigs, setGigs] = useState([]);
+
+  const handleSearch = (searchTerm) => {
+    const apiKey = "miJUGIkkQU6QXFaNLCD4rFk2Q0ZaGxVA";
+    const url = `https://app.ticketmaster.com/discovery/v2/events?apikey=${apiKey}&locale=*&startDateTime=2023-05-24T00:01:00Z&endDateTime=2023-05-24T23:59:00Z&city=${searchTerm}&countryCode=GB`;
+    setSearchTerm(searchTerm);
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const fetchedGigs = data._embedded?.events || [];
+        const formattedGigs = fetchedGigs.map((gig) => {
+          return {
+            artist: gig.name,
+            venue: gig._embedded.venues[0].name,
+            time: gig.dates.start.localTime,
+            imageURL: gig.images[0].url,
+            id: gig.id,
+          };
+        });
+        setGigs(formattedGigs);
+      })
+      .catch((error) => {
+        console.error("Error fetching gigs:", error);
+        setGigs([]);
+      });
+  };
+
+  const handleGigsToday = () => {
+    const apiKey = "miJUGIkkQU6QXFaNLCD4rFk2Q0ZaGxVA";
+    const currentDate = new Date().toISOString().split("T")[0];
+    const url = `https://app.ticketmaster.com/discovery/v2/events?apikey=${apiKey}&locale=*&startDateTime=${currentDate}T00:01:00Z&endDateTime=${currentDate}T23:59:00Z&city=${searchTerm}&countryCode=GB`;
+    console.log(url, "url");
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const fetchedGigs = data._embedded.events || [];
+        const formattedGigs = fetchedGigs.map((gig) => {
+          return {
+            artist: gig.name,
+            venue: gig._embedded.venues[0].name,
+            time: gig.dates.start.localTime,
+            imageURL: gig.images[0].url,
+            id: gig.id,
+          };
+        });
+        setGigs(formattedGigs);
+      })
+      .catch((error) => {
+        console.error("Error fetching gigs:", error);
+        setGigs([]);
+      });
+  };
+
+  const handleGigsTomorrow = () => {
+    const apiKey = "miJUGIkkQU6QXFaNLCD4rFk2Q0ZaGxVA";
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowDate = tomorrow.toISOString().split("T")[0];
+    const url = `https://app.ticketmaster.com/discovery/v2/events?apikey=${apiKey}&locale=*&startDateTime=${tomorrowDate}T00:01:00Z&endDateTime=${tomorrowDate}T23:59:00Z&city=${searchTerm}&countryCode=GB`;
+
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const fetchedGigs = data._embedded.events || [];
+        const formattedGigs = fetchedGigs.map((gig) => {
+          return {
+            artist: gig.name,
+            venue: gig._embedded.venues[0].name,
+            time: gig.dates.start.localTime,
+            imageURL: gig.images[0].url,
+            id: gig.id,
+          };
+        });
+        setGigs(formattedGigs);
+      })
+      .catch((error) => {
+        console.error("Error fetching gigs:", error);
+        setGigs([]);
+      });
+  };
+
   return (
     <View>
-      <GigSearch />
-      <GigList />
+      <GigSearch
+        onSearch={handleSearch}
+        onGigsToday={handleGigsToday}
+        onGigsTomorrow={handleGigsTomorrow}
+        setSearchTerm={setSearchTerm}
+        searchTerm={searchTerm}
+      />
+      <GigList gigs={gigs} />
     </View>
   );
 };

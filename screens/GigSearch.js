@@ -1,22 +1,24 @@
-import React from "react";
-import { View, TextInput, TouchableOpacity, Text } from "react-native";
-import { stylesHome } from "../styles/styleHomePage";
+import React, { useState } from 'react';
+import { View, TextInput, TouchableOpacity, Text } from 'react-native';
+import { stylesHome } from '../styles/styleHomePage';
+import GigsToday from './GigsToday';
+import GigsTomorrow from './GigsTomorrow';
 
-const GigSearch = () => {
+const GigSearch = ({ onSearch, onGigsToday, onGigsTomorrow, setSearchTerm, searchTerm }) => {
+  
   return (
     <View style={stylesHome.container}>
       <View style={stylesHome.searchContainer}>
-        <TextInput placeholder="Enter city" style={stylesHome.input} />
-        <TouchableOpacity style={stylesHome.searchButton}>
-          <Text style={stylesHome.searchButtonText}>Search</Text>
-        </TouchableOpacity>
+        <TextInput
+          placeholder="Enter city"
+          style={stylesHome.input}
+          value={searchTerm}
+          onChangeText={setSearchTerm}
+        />
+
       </View>
-      <TouchableOpacity style={stylesHome.todayButton}>
-        <Text style={stylesHome.todayButtonText}>Gigs Today</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={stylesHome.tomorrowButton}>
-        <Text style={stylesHome.tomorrowButtonText}>Gigs Tomorrow</Text>
-      </TouchableOpacity>
+      <GigsToday onGigsToday={onGigsToday} />
+      <GigsTomorrow onGigsTomorrow={onGigsTomorrow} />
     </View>
   );
 };

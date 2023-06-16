@@ -1,11 +1,16 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React from "react";
+import { Text, ScrollView } from "react-native";
+import GigCard from "./GigCard";
 
-const GigList = () => {
+const GigList = ({ gigs }) => {
   return (
-    <View>
-      {/* Add the list of gigs here */}
-    </View>
+    <ScrollView>
+      {gigs && gigs.length > 0 ? (
+        gigs.map((gig) => <GigCard key={gig.id} gig={gig} />)
+      ) : (
+        <Text>No gigs found</Text>
+      )}
+    </ScrollView>
   );
 };
 
