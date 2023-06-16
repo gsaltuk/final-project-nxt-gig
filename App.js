@@ -18,12 +18,14 @@ import Profile from "./screens/Profile";
 import SingleGig from "./screens/SingleGig";
 import EditProfile from "./screens/EditProfile";
 
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [user, setUser] = useState("");
 
   return (
+
     <UserContext.Provider value={{ user, setUser }}>
       <NavigationContainer>
         <Stack.Navigator>
@@ -49,6 +51,7 @@ export default function App() {
           <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
+
     </UserContext.Provider>
   );
 }
