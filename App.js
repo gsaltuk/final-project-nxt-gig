@@ -46,6 +46,7 @@ export default function App() {
           <Stack.Screen name="Artists" component={Artists}></Stack.Screen>
           <Stack.Screen name="Messages" component={Messages}></Stack.Screen>
           <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
+          <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </UserContext.Provider>
