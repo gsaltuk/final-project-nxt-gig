@@ -1,16 +1,16 @@
 import * as React from "react";
 import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import UserContext from "./context/user-context";
 
+import Conversation from "./screens/Conversation";
 import Welcome from "./screens/Welcome";
 import LoginForm from "./screens/Login";
 import SignUpForm from "./screens/SignUp";
 import SetupProfile from "./screens/SetupProfile";
-import Home from "./screens/Home";
 import NavBar from "./screens/NavBar";
 import Artists from "./screens/Artists";
 import Messages from "./screens/Messages";
@@ -48,11 +48,14 @@ export default function App() {
             name="SetupProfile"
             component={SetupProfile}
           ></Stack.Screen>
+        <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
           <Stack.Screen name="Artists" component={Artists}></Stack.Screen>
           <Stack.Screen name="Messages" component={Messages}></Stack.Screen>
           <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
           <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
+
           <Stack.Screen name="SingleArtist" component={SingleArtist}></Stack.Screen>
+
         </Stack.Navigator>
       </NavigationContainer>
 

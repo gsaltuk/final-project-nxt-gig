@@ -2,6 +2,7 @@ import React from "react";
 import { View, Image, Text } from "react-native";
 import gigCardStyles from "../styles/gigCardStyles";
 
+
 const GigCard = ({ gig }) => {
   return (
     <View style={gigCardStyles.container}>

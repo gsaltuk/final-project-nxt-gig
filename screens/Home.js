@@ -13,7 +13,7 @@ const Home = () => {
   const [gigs, setGigs] = useState([]);
 const {user} = useContext(UserContext)
 
-console.log("IN HOME >>>>", user)
+
   const handleSearch = (searchTerm) => {
     const apiKey = "miJUGIkkQU6QXFaNLCD4rFk2Q0ZaGxVA";
     const url = `https://app.ticketmaster.com/discovery/v2/events?apikey=${apiKey}&locale=*&startDateTime=2023-05-24T00:01:00Z&endDateTime=2023-05-24T23:59:00Z&city=${searchTerm}&countryCode=GB`;
