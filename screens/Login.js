@@ -9,13 +9,14 @@ import React, { useState, useEffect, useContext } from "react";
 import UserContext from "../context/user-context";
 import styles from "../styles/styles";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {firebase} from '../backend/firebase-config'
 
 export default function LoginForm({ navigation }) {
-  const { user, setUser, setCurrentUid } = useContext(UserContext);
+  const { setUser, setCurrentUid } = useContext(UserContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const authInstance = getAuth();
+  const authInstance = getAuth(firebase);
 
   useEffect(() => {
     authInstance.onAuthStateChanged((currentUser) => {
