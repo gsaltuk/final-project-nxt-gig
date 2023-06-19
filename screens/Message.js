@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native';
 import { useContext, useState, useEffect } from "react";
-import styles from '../styles/styles';
+import styles from '../styles/messagingStyle';
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import UserContext from '../context/user-context';
 import { db } from './SetupProfile';
@@ -24,8 +24,9 @@ const Message = ({ message, messageUid }) => {
   }, [messageUid]);
 
   return (
-    <View>
-      <Text>{firstName}</Text>
+    
+    <View  style={styles.messages}>
+      <Text>{firstName}:</Text>
       <Text styles={styles.messagesText}>{message.text}</Text>
     </View>
   );
