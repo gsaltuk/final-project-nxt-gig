@@ -17,6 +17,7 @@ import Messages from "./screens/Messages";
 import Profile from "./screens/Profile";
 import SingleGig from "./screens/SingleGig";
 import EditProfile from "./screens/EditProfile";
+import SingleArtist from "./screens/SingleArtist";
 
 
 const Stack = createNativeStackNavigator();
@@ -51,6 +52,7 @@ export default function App() {
           <Stack.Screen name="Messages" component={Messages}></Stack.Screen>
           <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
           <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
+          <Stack.Screen name="SingleArtist" component={SingleArtist}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
 
