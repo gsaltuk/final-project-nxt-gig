@@ -1,4 +1,4 @@
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import React, { useState, useEffect, useRef, useContext } from "react";
 
@@ -22,9 +22,6 @@ const Conversation = () => {
   const auth = getAuth(firebase);
   const db = getFirestore(firebase);
 
-
-
-
   useEffect(() => {
     const q = query(collection(db, "messages"), orderBy("created_at"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -37,13 +34,12 @@ const Conversation = () => {
     return () => unsubscribe();
   }, []);
   return (
-    <View styles={styles.container}>
+    <ScrollView styles={styles.container}>
       {messages.map((message) => (
-        <Message key={message.id} message={message} />
+        <Message key={message.id} messageUid={message.uid} message={message} />
       ))}
-
       <SendMessage />
-    </View>
+    </ScrollView>
   );
 };
 
