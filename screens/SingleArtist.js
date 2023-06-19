@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Video } from 'expo-av';
+import styles from "../styles/styles";
+
 
 export default function SingleArtist({ route }) {
   const [artist, setArtist] = useState(null);
@@ -62,12 +64,14 @@ export default function SingleArtist({ route }) {
   };
 
   const handleFavoriteArtist = () => {
-    const apiUrl = 'https://api.example.com/favorite-artist';
+    const userId = 'uid';
+
+    const documentUrl = `https://console.firebase.google.com/project/nxt-gig/firestore/data/users/${userId}`;
     const payload = {
-      favoriteArtist: artist.id
+      artistId: artist.id
     };
 
-    fetch(apiUrl, {
+    fetch(documentUrl, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -95,34 +99,36 @@ export default function SingleArtist({ route }) {
 
   return (
     <ScrollView>
-      <View>
+      <View style={styles.container}>
         {artist && (
           <View>
-            <Text>{artist.name}</Text>
+            <Text style={styles.artistName}>{artist.name}</Text>
             {artistImage ? (
               <Image
                 source={{ uri: artistImage }}
-                style={{ width: 200, height: 200 }}
+                style={styles.artistImage}
+                useNativeControls
               />
             ) : (
-              <Text>Image not available</Text>
+              <Text style={styles.songPreviewText}>Song preview not available</Text>
             )}
             {songPreview ? (
               <Video
                 source={{ uri: songPreview }}
-                style={{ width: 200, height: 40 }}
-                useNativeControls
+                shouldPlay
+                isLooping
+                style={styles.songPreview}
               />
             ) : (
-              <Text>Song preview not available</Text>
+              <Text style={styles.songPreviewText}>No song preview available</Text>
             )}
-            <TouchableOpacity onPress={handleFavoriteArtist}>
-              <Text>Favorite Artist</Text>
+            <TouchableOpacity onPress={handleFavoriteArtist} style={styles.addToFavoritesButton}>
+              <Text style={styles.addToFavoritesButtonText}>Add to favorites</Text>
             </TouchableOpacity>
-            <Text>{artistBio}</Text>
+            <Text style={styles.artistBio}>{artistBio}</Text>
           </View>
         )}
       </View>
     </ScrollView>
-  );  
+  );    
 }
