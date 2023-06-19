@@ -22,7 +22,6 @@ const Conversation = () => {
   const auth = getAuth(firebase);
   const db = getFirestore(firebase);
 
-  console.log(currentUid, "IN CONVERSATION")
 
 
 

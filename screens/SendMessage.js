@@ -17,7 +17,7 @@ const SendMessage = () => {
   const auth = getAuth(firebase);
   const db = getFirestore(firebase);
   const [inputMessage, setInputMessage] = useState(" ");
-  console.log("in the sendMessage", auth);
+
 
   const handleSendMessage = () => {
     if (inputMessage === "") {
@@ -33,7 +33,7 @@ const SendMessage = () => {
     });
   };
 
-  
+
 
   return (
     <>

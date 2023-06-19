@@ -9,7 +9,7 @@ import { db } from './SetupProfile';
 const Message = ({message}) => {
   const [userProfileInfo, setUserProfileInfo] = useState({});
   const { currentUid } = useContext(UserContext);
-  console.log(userProfileInfo, "USER INFO IN MESSAGE")
+
 
   useEffect(() => {
     const colRef = collection(db, "users");
