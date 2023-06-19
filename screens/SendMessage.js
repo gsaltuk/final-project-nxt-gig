@@ -1,6 +1,6 @@
 import { TouchableOpacity, TextInput, View, Text } from "react-native";
 import React, { useState } from "react";
-import styles from "../styles/styles";
+import styles from "../styles/messagingStyle";
 import { getAuth } from "firebase/auth";
 import { firebase } from "../backend/firebase-config";
 import {

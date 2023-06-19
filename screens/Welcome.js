@@ -4,7 +4,8 @@ import styles from "../styles/styles";
 
 export default function Welcome({ navigation }) {
   return (
-    <View style={styles.buttonContainer}>
+    <View style={styles.wellcomeContainer}>
+<View style={styles.buttonContainer}>
       <Text style={styles.text}>Welcome Page</Text>
       <TouchableOpacity onPress={() => navigation.navigate("Login")} style={styles.button}>
         <Text style={styles.button}>LOGIN</Text>
@@ -13,5 +14,7 @@ export default function Welcome({ navigation }) {
         <Text style={styles.button}>SIGNUP</Text>
       </TouchableOpacity>
     </View>
+    </View>
+    
   );
 }

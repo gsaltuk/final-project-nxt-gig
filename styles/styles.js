@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff", // Set the background color of the container
     
   },
+
   buttonContainer: {
     width: "75%",
     justifyContent: "center",
