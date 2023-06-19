@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { Link } from '@react-navigation/native';
 
 const Messages = () => {
   return (
     <View>
-      <Text>Messages</Text>
+      
+      <Link to={{screen: "Conversation"}}>conversation1</Link>
     </View>
   )
 }
