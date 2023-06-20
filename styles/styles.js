@@ -5,10 +5,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ffffff", // Set the background color of the container
-    
+    backgroundColor: "#ffffff",
   },
-
   buttonContainer: {
     width: "75%",
     justifyContent: "center",
@@ -18,7 +16,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "black",
     width: "100%",
-    padding: 10, // Increase the padding for more white space around the button
+    padding: 10,
     borderRadius: 10,
     marginTop: 10,
     color: "white",
@@ -32,9 +30,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginTop: 5,
     borderRadius: 7,
-    borderWidth:1,
+    borderWidth: 1,
     borderColor: "#eee",
-    width:330,
+    width: 330,
     height: 40,
   },
   text: {
@@ -47,7 +45,13 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 10,
   },
+  image: {
+    width: 200,
+    height: 200,
+    marginTop: 10,
+    marginBottom: 20,
+    borderRadius: 10,
+  },
 });
-
 
 export default styles;
