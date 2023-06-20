@@ -1,18 +1,15 @@
-
 import React, { useState, useContext } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import GigSearch from "./GigSearch";
 import GigList from "./GigList";
 import UserContext from "../context/user-context";
-
-
-
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [gigs, setGigs] = useState([]);
-const {user} = useContext(UserContext)
-
+  const { user } = useContext(UserContext);
+  const navigation = useNavigation();
 
   const handleSearch = (searchTerm) => {
     const apiKey = "miJUGIkkQU6QXFaNLCD4rFk2Q0ZaGxVA";
@@ -21,6 +18,7 @@ const {user} = useContext(UserContext)
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data, "data");
         const fetchedGigs = data._embedded?.events || [];
         const formattedGigs = fetchedGigs.map((gig) => {
           return {
@@ -29,6 +27,7 @@ const {user} = useContext(UserContext)
             time: gig.dates.start.localTime,
             imageURL: gig.images[0].url,
             id: gig.id,
+            ticket: gig.url,
           };
         });
         setGigs(formattedGigs);
@@ -55,6 +54,7 @@ const {user} = useContext(UserContext)
             time: gig.dates.start.localTime,
             imageURL: gig.images[0].url,
             id: gig.id,
+            ticket: gig.url,
           };
         });
         setGigs(formattedGigs);
@@ -83,6 +83,7 @@ const {user} = useContext(UserContext)
             time: gig.dates.start.localTime,
             imageURL: gig.images[0].url,
             id: gig.id,
+            ticket: gig.url,
           };
         });
         setGigs(formattedGigs);
@@ -91,6 +92,15 @@ const {user} = useContext(UserContext)
         console.error("Error fetching gigs:", error);
         setGigs([]);
       });
+  };
+
+  const handleGetTickets = (gig) => {
+    if (!gig.ticket) {
+      console.log("No ticket information available for this gig");
+      return;
+    }
+
+    navigation.navigate("GetTickets", { gig });
   };
 
   return (
@@ -102,13 +112,9 @@ const {user} = useContext(UserContext)
         setSearchTerm={setSearchTerm}
         searchTerm={searchTerm}
       />
-      <GigList gigs={gigs} />
+      <GigList gigs={gigs} onGetTickets={handleGetTickets} />
     </View>
-
   );
 };
 
 export default Home;
-
-
-
