@@ -16,7 +16,7 @@ const SingleGig = () => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image source={{ uri: gig.imageURL }} style={styles.image} />
+        <Image source={{ uri: gig.imageURL }} style={styles.image} resizeMode="contain" />
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button}>
@@ -34,9 +34,8 @@ const SingleGig = () => {
           <Text style={styles.buttonText}>Get Tickets</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.text}>Artist: {gig.artist}</Text>
-      <Text style={styles.text}>Venue: {gig.venue}</Text>
-      <Text style={styles.text}>City: {gig.city}</Text>
+      <Text style={styles.artistText}>{gig.artist}</Text>
+      <Text style={styles.venueText}>{gig.venue}</Text>
     </View>
   );
 };
@@ -45,14 +44,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: "black",
     paddingTop: 20,
   },
   imageContainer: {
+    width: "100%",
     alignItems: "center",
+    justifyContent: "center",
+    aspectRatio: 1,
   },
   image: {
-    width: 150,
-    height: 150,
+    flex: 1,
+    width: "100%",
+    height: undefined,
+    aspectRatio: 1,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -61,19 +66,28 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#fc038c",
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 4,
     marginHorizontal: 5,
   },
   buttonText: {
-    color: "#fff",
+    color: "white",
     fontWeight: "bold",
+    textTransform: "uppercase",
   },
-  text: {
+  artistText: {
     fontSize: 16,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    color: "white",
     marginBottom: 10,
+  },
+  venueText: {
+    fontSize: 16,
+    textTransform: "uppercase",
+    color: "white",
   },
 });
 
