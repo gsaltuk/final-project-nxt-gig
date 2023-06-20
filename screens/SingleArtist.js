@@ -1,14 +1,38 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { Video } from 'expo-av';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
+import { Video } from "expo-av";
+import { Ionicons } from "@expo/vector-icons";
 import styles from "../styles/styles";
-
+import {
+  getFirestore,
+  query,
+  where,
+  collection,
+  onSnapshot,
+  doc,
+  updateDoc,
+} from "@firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { firebase } from "../backend/firebase-config";
 
 export default function SingleArtist({ route }) {
   const [artist, setArtist] = useState(null);
   const [artistImage, setArtistImage] = useState(null);
-  const [artistBio, setArtistBio] = useState('');
-  const [songPreview, setSongPreview] = useState('');
+  const [artistBio, setArtistBio] = useState("");
+  const [songPreview, setSongPreview] = useState("");
+  const [userProfileInfo, setUserProfileInfo] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const videoRef = useRef(null);
+  const db = getFirestore();
+
+  const user = getAuth(firebase);
 
   useEffect(() => {
     if (route && route.params && route.params.artist) {
@@ -19,20 +43,45 @@ export default function SingleArtist({ route }) {
     }
   }, [route]);
 
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
+      snapshot.forEach((doc) => {
+        const userData = doc.data();
+        if (userData.uid === user.currentUser.uid) {
+          setUserProfileInfo({ id: doc.id, ...userData });
+        }
+      });
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const fetchArtistDetails = (artist) => {
-    fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${encodeURIComponent(artist.name)}&api_key=374a714c7bfd22d920627a094682d88d&format=json`)
+    fetch(
+      `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${encodeURIComponent(
+        artist.name
+      )}&api_key=374a714c7bfd22d920627a094682d88d&format=json`
+    )
       .then((res) => res.json())
       .then(({ artist: artistInfo }) => {
         const artistBio = artistInfo.bio.content;
-        setArtistBio(artistBio);
+        const paragraphs = artistBio.split("\n\n");
+        const firstTwoParagraphs = paragraphs.slice(0, 2);
+        const result = firstTwoParagraphs.join("\n\n");
+        console.log(result);
+        setArtistBio(result);
       })
       .catch((error) => {
         console.log("Error while fetching artist details:", error);
-      })
-  }
+      });
+  };
 
   const fetchArtistImage = (artist) => {
-    fetch(`https://api.deezer.com/search/artist?q=${encodeURIComponent(artist.name)}`)
+    fetch(
+      `https://api.deezer.com/search/artist?q=${encodeURIComponent(
+        artist.name
+      )}`
+    )
       .then((res) => res.json())
       .then(({ data }) => {
         if (data.length > 0) {
@@ -47,7 +96,9 @@ export default function SingleArtist({ route }) {
   };
 
   const fetchSongPreview = (artist) => {
-    fetch(`https://api.deezer.com/search/track?q=${encodeURIComponent(artist.name)}`)
+    fetch(
+      `https://api.deezer.com/search/track?q=${encodeURIComponent(artist.name)}`
+    )
       .then((res) => res.json())
       .then(({ data }) => {
         if (data.length > 0) {
@@ -63,39 +114,37 @@ export default function SingleArtist({ route }) {
       });
   };
 
-  const handleFavoriteArtist = () => {
-    const userId = 'uid';
+  const handleFavoriteArtist = async (e) => {
+    e.preventDefault();
 
-    const documentUrl = `https://console.firebase.google.com/project/nxt-gig/firestore/data/users/${userId}`;
-    const payload = {
-      artistId: artist.id
-    };
+    try {
+      if (userProfileInfo) {
+        const docRef = doc(db, "users", userProfileInfo.id);
+        const userSnapshot = await updateDoc(docRef, {
+          "fav-artists": [...userProfileInfo["fav-artists"], artist.name],
+        });
 
-    fetch(documentUrl, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-      .then(res => {
-        if (res.ok) {
-          console.log('Added to favorite');
-        } else {
-          console.log('Failed to add to favorite');
-        }
-      })
-      .catch(error => {
-        console.error('Error while favoriting the artist:', error);
-      })
-  }
+        Alert.alert("Added to favorites!");
+      }
+    } catch (error) {
+      console.error("Error updating profile: ", error);
+    }
+  };
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      videoRef.current.pauseAsync();
+    } else {
+      videoRef.current.playAsync();
+    }
+    setIsPlaying((prev) => !prev);
+  };
 
   useEffect(() => {
     if (artist) {
       fetchSongPreview(artist);
     }
   }, [artist]);
-
 
   return (
     <ScrollView>
@@ -110,25 +159,50 @@ export default function SingleArtist({ route }) {
                 useNativeControls
               />
             ) : (
-              <Text style={styles.songPreviewText}>Song preview not available</Text>
+              <Text style={styles.songPreviewText}>
+                Song preview not available
+              </Text>
             )}
             {songPreview ? (
-              <Video
-                source={{ uri: songPreview }}
-                shouldPlay
-                isLooping
-                style={styles.songPreview}
-              />
+              <View>
+                <Video
+                  ref={videoRef}
+                  source={{ uri: songPreview }}
+                  shouldPlay={true}
+                  isLooping
+                  style={styles.songPreview}
+                />
+                <TouchableOpacity
+                  onPress={handlePlayPause}
+                  style={[
+                    styles.playPauseButton,
+                    { backgroundColor: "#000000" },
+                  ]}
+                >
+                  <Ionicons
+                    name={isPlaying ? "pause" : "play"}
+                    size={24}
+                    color="#ffffff"
+                  />
+                </TouchableOpacity>
+              </View>
             ) : (
-              <Text style={styles.songPreviewText}>No song preview available</Text>
+              <Text style={styles.songPreviewText}>
+                No song preview available
+              </Text>
             )}
-            <TouchableOpacity onPress={handleFavoriteArtist} style={styles.addToFavoritesButton}>
-              <Text style={styles.addToFavoritesButtonText}>Add to favorites</Text>
+            <TouchableOpacity
+              onPress={handleFavoriteArtist}
+              style={styles.addToFavoritesButton}
+            >
+              <Text style={styles.addToFavoritesButtonText}>
+                Add to favorites
+              </Text>
             </TouchableOpacity>
             <Text style={styles.artistBio}>{artistBio}</Text>
           </View>
         )}
       </View>
     </ScrollView>
-  );    
+  );
 }
