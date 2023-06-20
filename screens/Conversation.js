@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import styles from "../styles/styles";
 import Message from "./Message";
@@ -9,7 +9,7 @@ import { db } from "../backend/firebase-config";
 const Conversation = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const { recipient, user } = route.params;
-  console.log(messages);
+  const [conversationRef, setConversationRef] = useState(null); // Initialize conversation reference as null
 
   useEffect(() => {
     if (!user) return;
@@ -28,8 +28,10 @@ const Conversation = ({ route }) => {
         for (const conversationDoc of conversationsSnapshot.docs) {
           const participants = conversationDoc.data().participants;
 
-          // Check if the `recipients` array contains the `recipient` value
           if (participants.includes(recipient)) {
+            // Save the conversation reference
+            setConversationRef(conversationDoc.ref);
+
             const messagesRef = collection(conversationDoc.ref, "messages");
             const messagesSnapshot = await getDocs(messagesRef);
             const conversationMessages = messagesSnapshot.docs.map((doc) =>
@@ -50,14 +52,21 @@ const Conversation = ({ route }) => {
     };
 
     fetchMessages();
-  }, []);
+  }, [user, recipient]);
 
   return (
-    <View>
-      {messages.map((message) => (
-        <Message key={message.messageId} message={message} />
-      ))}
-      <SendMessage  />
+    <View style={styles.container}>
+      <ScrollView style={styles.messageContainer}>
+        {messages.map((message) => (
+          <Message
+            key={message.messageId}
+            message={message}
+            user={user}
+            recipient={recipient}
+          />
+        ))}
+      </ScrollView>
+      <SendMessage user={user} convRef={conversationRef} recipient={recipient} />
     </View>
   );
 };

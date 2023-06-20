@@ -1,57 +1,75 @@
-import { TouchableOpacity, TextInput, View, Text } from "react-native";
+import { TouchableOpacity, TextInput, View, Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
-import styles from "../styles/styles";
-import { getAuth } from "firebase/auth";
-import { firebase } from "../backend/firebase-config";
 import {
   collection,
-  getFirestore,
-  onSnapshot,
-  query,
-  orderBy,
   addDoc,
   serverTimestamp,
-} from "@firebase/firestore";
+} from "firebase/firestore";
+import { db } from "../backend/firebase-config";
 
-const SendMessage = () => {
-  const auth = getAuth(firebase);
-  const db = getFirestore(firebase);
-  const [inputMessage, setInputMessage] = useState(" ");
+const SendMessage = ({ user, convRef, recipient }) => {
+  const [inputMessage, setInputMessage] = useState("");
 
-
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (inputMessage === "") {
-      alert("please enter a correct message!");
+      alert("Please enter a correct message!");
       return;
     }
-    const { uid, displayName } = auth.currentUser;
-    addDoc(collection(db, "messages"), {
-      text: inputMessage,
-      name: displayName,
-      uid,
-      created_at: serverTimestamp(),
-    });
+
+    try {
+      await addDoc(collection(convRef, "messages"), {
+        content: inputMessage,
+        senderId: user.username,
+        createdAt: serverTimestamp(),
+      });
+
+      setInputMessage(""); 
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
 
-
-
   return (
-    <>
-      <View style={styles.buttonContainer}>
-        <TextInput
-          placeholder="type your msg..."
-          onChangeText={(text) => setInputMessage(text)}
-          style={styles.input}
-        />
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleSendMessage} style={styles.button}>
-          <Text style={styles.button}>Send</Text>
-        </TouchableOpacity>
-      </View>
-    </>
+    <View style={styles.container}>
+      <TextInput
+        placeholder="Type your message..."
+        onChangeText={(text) => setInputMessage(text)}
+        value={inputMessage}
+        style={styles.input}
+      />
+      <TouchableOpacity onPress={handleSendMessage} style={styles.button}>
+        <Text style={styles.buttonText}>Send</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    backgroundColor: "#F2F2F2",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+  },
+  button: {
+    marginLeft: 10,
+    backgroundColor: "#007AFF",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
+});
 
 export default SendMessage;
