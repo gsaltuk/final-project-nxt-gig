@@ -1,65 +1,56 @@
-import {
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-
-import React, { useState, useEffect, useRef, useContext } from "react";
-import {} from "@react-navigation/native";
+import React, { useState, useEffect } from "react";
+import { View, Text } from "react-native";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import styles from "../styles/styles";
-import { getAuth } from "firebase/auth";
-import { firebase } from "../backend/firebase-config";
-import {
-  collection,
-  getFirestore,
-  onSnapshot,
-  query,
-  orderBy,
-  where,
-} from "@firebase/firestore";
 import Message from "./Message";
 import SendMessage from "./SendMessage";
-import UserContext from "../context/user-context";
-import { useRoute } from "@react-navigation/native";
+import { db } from "../backend/firebase-config";
 
-const Conversation = () => {
+const Conversation = ({ route }) => {
   const [messages, setMessages] = useState([]);
-  const { currentUid } = useContext(UserContext);
-  const auth = getAuth(firebase);
-  const db = getFirestore(firebase);
-  const route = useRoute();
-  const recipient = String(route.params.recipient);
-  const user = String(route.params.user.username);
-
-  console.log("USERRRR", user.username, "RECIPPPP", recipient);
+  const { recipient, user } = route.params;
+  console.log(messages)
 
   useEffect(() => {
-    if (!user || !recipient) return;
-    const colRef = collection(db, "conversations");
-    const q = query(
-      colRef,
-      where("participants", "array-contains", user),
-      where("participants", "array-contains", recipient)
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let messages = [];
-      querySnapshot.forEach((doc) => {
-        console.log("IN CHAT", doc.data);
-        messages.push({ ...doc.data(), id: doc.id });
-      });
-      setMessages(messages);
-    });
-    return () => unsubscribe();
+    if(!user) return
+    const fetchMessages = async () => {
+      try {
+        const conversationsRef = collection(db, "conversations");
+        const q = query(
+          conversationsRef,
+          where("participants", "array-contains", user.username),
+
+        );
+
+        const conversationsSnapshot = await getDocs(q);
+
+        for (const conversationDoc of conversationsSnapshot.docs) {
+          const messagesRef = collection(conversationDoc.ref, "messages");
+          const messagesSnapshot = await getDocs(messagesRef);
+
+          const conversationMessages = messagesSnapshot.docs.map((doc) =>
+            doc.data()
+          );
+
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            ...conversationMessages,
+          ]);
+          
+        }
+      } catch (error) {
+        console.error("Error retrieving messages:", error);
+      }
+    };
+
+    fetchMessages();
   }, []);
+
   return (
-    <ScrollView styles={styles.container}>
-      {messages.map((message) => (
-        <Message key={message.id} messageUid={message.uid} message={message} />
-      ))}
+    <View>
+      
       <SendMessage />
-    </ScrollView>
+    </View>
   );
 };
 
