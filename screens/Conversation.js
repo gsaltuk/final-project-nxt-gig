@@ -9,35 +9,41 @@ import { db } from "../backend/firebase-config";
 const Conversation = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const { recipient, user } = route.params;
-  console.log(messages)
+  console.log(messages);
 
   useEffect(() => {
-    if(!user) return
+    if (!user) return;
+
     const fetchMessages = async () => {
       try {
         const conversationsRef = collection(db, "conversations");
         const q = query(
           conversationsRef,
-          where("participants", "array-contains", user.username),
-
+          where("participants", "array-contains", user.username)
         );
 
         const conversationsSnapshot = await getDocs(q);
+        const allMessages = [];
 
         for (const conversationDoc of conversationsSnapshot.docs) {
-          const messagesRef = collection(conversationDoc.ref, "messages");
-          const messagesSnapshot = await getDocs(messagesRef);
+          const participants = conversationDoc.data().participants;
 
-          const conversationMessages = messagesSnapshot.docs.map((doc) =>
-            doc.data()
-          );
+          // Check if the `recipients` array contains the `recipient` value
+          if (participants.includes(recipient)) {
+            const messagesRef = collection(conversationDoc.ref, "messages");
+            const messagesSnapshot = await getDocs(messagesRef);
+            const conversationMessages = messagesSnapshot.docs.map((doc) =>
+              doc.data()
+            );
 
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            ...conversationMessages,
-          ]);
-          
+            allMessages.push(...conversationMessages);
+          }
         }
+
+        const sortedMessages = allMessages.sort(
+          (a, b) => a.createdAt - b.createdAt
+        );
+        setMessages(sortedMessages);
       } catch (error) {
         console.error("Error retrieving messages:", error);
       }
@@ -48,8 +54,10 @@ const Conversation = ({ route }) => {
 
   return (
     <View>
-      
-      <SendMessage />
+      {messages.map((message) => (
+        <Message key={message.messageId} message={message} />
+      ))}
+      <SendMessage  />
     </View>
   );
 };

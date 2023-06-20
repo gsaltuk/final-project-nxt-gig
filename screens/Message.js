@@ -1,37 +1,17 @@
-import { View, Text } from 'react-native';
+import { View, Text } from "react-native";
 import { useContext, useState, useEffect } from "react";
-import styles from '../styles/messagingStyle';
+import styles from "../styles/messagingStyle";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
-import UserContext from '../context/user-context';
-import { db } from './SetupProfile';
+import UserContext from "../context/user-context";
+import { db } from "./SetupProfile";
 
-const Message = ({ message, messageUid }) => {
-  const [firstName, setFirstName] = useState("");
-
-  useEffect(() => {
-    const colRef = collection(db, "users");
-    const q = query(colRef, where("uid", "==", messageUid));
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      snapshot.forEach((doc) => {
-        const userData = { id: doc.id, ...doc.data() };
-        console.log(userData.firstName, "IN MESSAGE");
-        setFirstName(userData.firstName);
-      });
-    });
-
-    return () => unsubscribe();
-  }, [messageUid]);
-
+const Message = ({ message }) => {
   return (
-    
-    <View  style={styles.messages}>
-      <Text>{firstName}:</Text>
-      <Text styles={styles.messagesText}>{message.text}</Text>
+    <View>
+      <Text>{message.senderId}</Text>
+      <Text>{message.content}</Text>
     </View>
   );
-}
+};
 
 export default Message;
-
-  
