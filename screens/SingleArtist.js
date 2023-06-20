@@ -18,6 +18,7 @@ import {
   onSnapshot,
   doc,
   updateDoc,
+  getDocs,
 } from "@firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { firebase } from "../backend/firebase-config";
@@ -29,6 +30,7 @@ export default function SingleArtist({ route }) {
   const [songPreview, setSongPreview] = useState("");
   const [userProfileInfo, setUserProfileInfo] = useState(null);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
   const videoRef = useRef(null);
   const db = getFirestore();
 
@@ -44,17 +46,30 @@ export default function SingleArtist({ route }) {
   }, [route]);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-      snapshot.forEach((doc) => {
-        const userData = doc.data();
-        if (userData.uid === user.currentUser.uid) {
-          setUserProfileInfo({ id: doc.id, ...userData });
-        }
-      });
-    });
-
+    const unsubscribe = onSnapshot(
+      collection(db, "users"),
+      (snapshot) => {
+        snapshot.forEach((doc) => {
+          const userData = doc.data();
+          if (userData.uid === user.currentUser.uid) {
+            setUserProfileInfo({ id: doc.id, ...userData });
+          }
+        });
+      },
+      (error) => {
+        console.error("Error getting user profile:", error);
+      }
+    );
+  
     return () => unsubscribe();
   }, []);
+  
+
+  useEffect(() => {
+    if (artist) {
+      fetchSongPreview(artist);
+    }
+  }, [artist]);
 
   const fetchArtistDetails = (artist) => {
     fetch(
@@ -64,18 +79,23 @@ export default function SingleArtist({ route }) {
     )
       .then((res) => res.json())
       .then(({ artist: artistInfo }) => {
-        const artistBio = artistInfo.bio.content;
-        const paragraphs = artistBio.split("\n\n");
-        const firstTwoParagraphs = paragraphs.slice(0, 2);
-        const result = firstTwoParagraphs.join("\n\n");
-        console.log(result);
-        setArtistBio(result);
+        if (artistInfo && artistInfo.bio && artistInfo.bio.content) {
+          const artistBio = artistInfo.bio.content;
+          const paragraphs = artistBio.split("\n\n");
+          const firstTwoParagraphs = paragraphs.slice(0, 2);
+          const result = firstTwoParagraphs.join("\n\n");
+          console.log(result);
+          setArtistBio(result);
+        } else {
+          console.log("No artist bio available");
+          setArtistBio("");
+        }
       })
       .catch((error) => {
         console.log("Error while fetching artist details:", error);
       });
   };
-
+  
   const fetchArtistImage = (artist) => {
     fetch(
       `https://api.deezer.com/search/artist?q=${encodeURIComponent(
@@ -84,20 +104,26 @@ export default function SingleArtist({ route }) {
     )
       .then((res) => res.json())
       .then(({ data }) => {
-        if (data.length > 0) {
+        if (data && data.length > 0) {
           const imageUrl = data[0].picture_big;
           console.log("Image URL:", imageUrl);
           setArtistImage(imageUrl);
+        } else {
+          console.log("No artist image available");
+          setArtistImage(null);
         }
       })
       .catch((error) => {
         console.log("Error occurred:", error);
       });
   };
+  
 
   const fetchSongPreview = (artist) => {
     fetch(
-      `https://api.deezer.com/search/track?q=${encodeURIComponent(artist.name)}`
+      `https://api.deezer.com/search/track?q=${encodeURIComponent(
+        artist.name
+      )}`
     )
       .then((res) => res.json())
       .then(({ data }) => {
@@ -114,17 +140,33 @@ export default function SingleArtist({ route }) {
       });
   };
 
-  const handleFavoriteArtist = async (e) => {
-    e.preventDefault();
-
+  const handleFavoriteArtist = async () => {
     try {
       if (userProfileInfo) {
-        const docRef = doc(db, "users", userProfileInfo.id);
-        const userSnapshot = await updateDoc(docRef, {
-          "fav-artists": [...userProfileInfo["fav-artists"], artist.name],
-        });
-
-        Alert.alert("Added to favorites!");
+        const favoriteArtists = userProfileInfo["fav-artists"];
+        const isAlreadyFavorite = favoriteArtists.includes(artist.name);
+  
+        if (isAlreadyFavorite) {
+          const updatedFavoriteArtists = favoriteArtists.filter(
+            (favArtist) => favArtist !== artist.name
+          );
+  
+          const docRef = doc(db, "users", userProfileInfo.id);
+          await updateDoc(docRef, {
+            "fav-artists": updatedFavoriteArtists,
+          });
+  
+          setIsFavorite(false);
+          Alert.alert("Removed from favorites!");
+        } else {
+          const docRef = doc(db, "users", userProfileInfo.id);
+          await updateDoc(docRef, {
+            "fav-artists": [...favoriteArtists, artist.name],
+          });
+  
+          setIsFavorite(true);
+          Alert.alert("Added to favorites!");
+        }
       }
     } catch (error) {
       console.error("Error updating profile: ", error);
@@ -141,10 +183,34 @@ export default function SingleArtist({ route }) {
   };
 
   useEffect(() => {
-    if (artist) {
-      fetchSongPreview(artist);
-    }
-  }, [artist]);
+    const fetchUserProfile = async () => {
+      if (user.currentUser) {
+        const q = query(
+          collection(db, "users"),
+          where("uid", "==", user.currentUser.uid)
+        );
+        try {
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            const userData = querySnapshot.docs[0].data();
+            setUserProfileInfo({ id: querySnapshot.docs[0].id, ...userData });
+          }
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, [user, db]);
+
+  useEffect(() => {
+    setIsFavorite(
+      userProfileInfo &&
+        userProfileInfo["fav-artists"] &&
+        userProfileInfo["fav-artists"].includes(artist.name)
+    );
+  }, [userProfileInfo, artist]);
 
   return (
     <ScrollView>
@@ -193,10 +259,13 @@ export default function SingleArtist({ route }) {
             )}
             <TouchableOpacity
               onPress={handleFavoriteArtist}
-              style={styles.addToFavoritesButton}
+              style={[
+                styles.addToFavoritesButton,
+                isFavorite ? { backgroundColor: "red" } : { backgroundColor: "blue" },
+              ]}
             >
               <Text style={styles.addToFavoritesButtonText}>
-                Add to favorites
+                {isFavorite ? "Remove from favorites" : "Add to favorites"}
               </Text>
             </TouchableOpacity>
             <Text style={styles.artistBio}>{artistBio}</Text>
@@ -204,5 +273,5 @@ export default function SingleArtist({ route }) {
         )}
       </View>
     </ScrollView>
-  );
+  );  
 }
