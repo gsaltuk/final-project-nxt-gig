@@ -47,7 +47,8 @@ const stylesHome = StyleSheet.create({
     marginRight: 8,
     paddingHorizontal: 8,
     color: 'white',
-    marginLeft: 8
+    marginLeft: 8,
+    borderRadius: 4,
   },
   searchButton: {
     backgroundColor: "#4CAF50",

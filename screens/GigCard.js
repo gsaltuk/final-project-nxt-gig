@@ -31,8 +31,8 @@ const gigCardStyles = StyleSheet.create({
     marginLeft: 16,
     marginTop: 12, 
     width: '90.5%',
-    borderWidth: 2,
-    borderColor: "#ccc",
+    borderWidth: 0.5,
+    borderColor: "white",
   },
   image: {
     width: 150,
