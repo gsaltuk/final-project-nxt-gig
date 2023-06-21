@@ -34,10 +34,9 @@ export default function Profile({ navigation }) {
       />
       <View >
         <Text style={styles.usernameText}>{userProfileInfo.username}</Text>
-        <Text style={styles.text}>{userProfileInfo["firstName"]}</Text>
-        <Text style={styles.text}>{userProfileInfo["lastName"]}</Text>
-        <Text style={styles.text}>{userProfileInfo.city}</Text>
-        <Text style={styles.text}>{userProfileInfo.bio}</Text>
+        <Text style={styles.text}>{userProfileInfo["firstName"]} {userProfileInfo["lastName"]}</Text>
+        <Text style={styles.cityText}>{userProfileInfo.city}</Text>
+        <Text style={styles.bioText}>{userProfileInfo.bio}</Text>
       </View>
       <TouchableOpacity onPress={handleEdit} style={styles.button}>
         <Text style={styles.button}>EDIT PROFILE</Text>
@@ -87,8 +86,9 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold'
+    fontSize: 30,
+    fontWeight: 'bold',
+    textTransform: "uppercase",
     
   },
   profileImage: {
@@ -133,9 +133,22 @@ const styles = StyleSheet.create({
     marginTop: 75,
   },
   usernameText: {
-    color: 'white',
-    fontSize: 40,
+    fontSize: 35,
     fontWeight: 'bold',
-    textTransform: "uppercase"
+    textTransform: "uppercase",
+    color: "#fc038c",
+    textAlign: 'center'
+  },
+  bioText: {
+    color: 'white',
+    textAlign: "center",
+    fontSize: 20,
+  
+  },
+  cityText: {
+    textTransform: "uppercase",
+    color: 'white',
+    textAlign: "center",
+    fontSize: 25
   }
 });
