@@ -57,7 +57,7 @@ console.log(recipient)
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View key={recipient} style={styles.container}>
       <ScrollView style={styles.messageContainer}>
         {messages.map((message) => (
           <Message
