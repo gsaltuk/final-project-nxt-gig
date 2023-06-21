@@ -1,20 +1,89 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { Linking } from "react-native";
-import { getAuth } from "firebase/auth";
+import { Linking, Alert } from "react-native";
+
 import { firebase } from "../backend/firebase-config";
+import {
+  collection,
+  query,
+  doc,
+  setDoc,
+  where,
+  addDoc,   
+  onSnapshot,
+  getFirestore,
+  updateDoc,
+} from "firebase/firestore";
 import useLoggedInUser from "../backend/firebase-auth";
+const db = getFirestore(firebase);
 
 const SingleGig = () => {
   const [isFavouriteGig, setisFavouriteGig] = useState(false);
-
+  const [interestedListId, setInterestedListId] = useState('');
+  const [interestedUsers, setInterestedUsers] = useState([]);
   const loggedUser = useLoggedInUser();
+  const loggedUserName = loggedUser?.username;
 
-  console.log(loggedUser, "auth in the single gig");
   const route = useRoute();
   const { gig } = route.params || {};
-  const handleFavouriteGig = async () => {};
+  
+  useEffect(() => {
+    if (!loggedUserName) return;
+  
+    const colRef = collection(db, "interested");
+    const q = query(colRef, where("GIG_ID", "==", gig.id));
+  
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      let hasData = false;
+      snapshot.forEach((doc) => {
+        const data = { id: doc.id, ...doc.data() };
+        if (data) {
+          hasData = true;
+          setInterestedListId(data.id);
+          setInterestedUsers(data.USERS);
+        }
+      });
+  
+      if (!hasData) {
+        addDoc(collection(db, "interested"), {
+          GIG_ID: gig.id,
+          USERS: [],
+        });
+      }
+    });
+  
+    return () => unsubscribe();
+  }, [gig.id, loggedUserName]);
+  
+
+  const handleFavouriteGig = async () => {
+    try {
+      
+      const isAlreadyInterested = interestedUsers.includes(loggedUserName);
+      if (isAlreadyInterested) {
+        const updatedInterestedUsers = interestedUsers.filter(
+          (interestedUser) => interestedUser !== loggedUserName
+        );
+        const interestedDocRef = doc(db, "interested", interestedListId);
+        await updateDoc(interestedDocRef, {
+          USERS: updatedInterestedUsers,
+        });
+        setisFavouriteGig(false);
+        Alert.alert("Deleted from your favourites");
+      } else {
+
+        const interestedDocRef = doc(db, "interested", interestedListId);
+        await updateDoc(interestedDocRef, {
+          USERS: [...interestedUsers, loggedUserName],
+        });
+        setisFavouriteGig(true);
+        Alert.alert("Added to your favourites");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -31,7 +100,7 @@ const SingleGig = () => {
           style={[
             styles.addFavouriteGig,
             isFavouriteGig
-              ? { backgroundColor: red }
+              ? { backgroundColor: 'red' }
               : { backgroundColor: "#fc038c" },
           ]}
         >
