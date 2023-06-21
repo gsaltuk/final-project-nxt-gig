@@ -1,45 +1,75 @@
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
-
-import React, { useState, useEffect, useRef, useContext } from "react";
-
+import React, { useState, useEffect } from "react";
+import { View, Text, ScrollView } from "react-native";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import styles from "../styles/styles";
-import { getAuth } from "firebase/auth";
-import { firebase } from "../backend/firebase-config";
-import {
-  collection,
-  getFirestore,
-  onSnapshot,
-  query,
-  orderBy,
-} from "@firebase/firestore";
 import Message from "./Message";
 import SendMessage from "./SendMessage";
-import UserContext from "../context/user-context";
+import { db } from "../backend/firebase-config";
 
-const Conversation = () => {
+const Conversation = ({ route }) => {
   const [messages, setMessages] = useState([]);
-  const { currentUid } = useContext(UserContext)
-  const auth = getAuth(firebase);
-  const db = getFirestore(firebase);
-
+  const { recipient, user } = route.params;
+  const [conversationRef, setConversationRef] = useState(null); //
+console.log(messages)
+console.log(user)
+console.log(recipient)
   useEffect(() => {
-    const q = query(collection(db, "messages"), orderBy("created_at"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let messages = [];
-      querySnapshot.forEach((doc) => {
-        messages.push({ ...doc.data(), id: doc.id });
-      });
-      setMessages(messages);
-    });
-    return () => unsubscribe();
+    if (!user) return;
+
+    const fetchMessages = async () => {
+      try {
+        const conversationsRef = collection(db, "conversations");
+        const q = query(
+          conversationsRef,
+          where("participants", "array-contains", user.username)
+        );
+
+        const conversationsSnapshot = await getDocs(q);
+        const allMessages = [];
+
+        for (const conversationDoc of conversationsSnapshot.docs) {
+          const participants = conversationDoc.data().participants;
+
+          if (participants.includes(recipient)) {
+            // Save the conversation reference
+            setConversationRef(conversationDoc.ref);
+
+            const messagesRef = collection(conversationDoc.ref, "messages");
+            const messagesSnapshot = await getDocs(messagesRef);
+            const conversationMessages = messagesSnapshot.docs.map((doc) =>
+              doc.data()
+            );
+
+            allMessages.push(...conversationMessages);
+          }
+        }
+
+        const sortedMessages = allMessages.sort(
+          (a, b) => a.createdAt - b.createdAt
+        );
+        setMessages(sortedMessages);
+      } catch (error) {
+        console.error("Error retrieving messages:", error);
+      }
+    };
+
+    fetchMessages();
   }, []);
+
   return (
-    <ScrollView styles={styles.container}>
-      {messages.map((message) => (
-        <Message key={message.id} messageUid={message.uid} message={message} />
-      ))}
-      <SendMessage />
-    </ScrollView>
+    <View key={recipient} style={styles.container}>
+      <ScrollView style={styles.messageContainer}>
+        {messages.map((message) => (
+          <Message
+            key={message.messageId}
+            message={message}
+            user={user}
+            recipient={recipient}
+          />
+        ))}
+      </ScrollView>
+      <SendMessage user={user} convRef={conversationRef} recipient={recipient} setMessages={setMessages} />
+    </View>
   );
 };
 
