@@ -1,6 +1,6 @@
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import styles from "../styles/styles";
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useContext, useEffect } from 'react'
 import UserContext from "../context/user-context";
 import { db } from "./SetupProfile";
 import { collection, query, where, onSnapshot } from "firebase/firestore";

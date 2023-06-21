@@ -6,6 +6,7 @@ const stylesHome = StyleSheet.create({
     paddingTop: 16,
   },
   searchContainer: {
+    marginTop: 50,
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,

@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff", // Set the background color of the container
     paddingHorizontal: 20,
     paddingTop: 20,
-    
   },
 
   buttonContainer: {
@@ -34,9 +33,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginTop: 5,
     borderRadius: 7,
-    borderWidth:1,
+    borderWidth: 1,
     borderColor: "#eee",
-    width:330,
+    width: 330,
     height: 40,
   },
   text: {
@@ -51,7 +50,7 @@ const styles = StyleSheet.create({
   },
   artistName: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   artistImage: {
@@ -68,19 +67,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   addToFavoritesButton: {
-    backgroundColor: 'lightblue',
+    backgroundColor: "lightblue",
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
   },
   addToFavoritesButtonText: {
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   artistBio: {
     marginBottom: 20,
   },
+  artistContainer: {
+    marginTop: 75,
+  },
 });
-
 
 export default styles;

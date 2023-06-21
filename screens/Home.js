@@ -4,9 +4,10 @@ import GigSearch from "./GigSearch";
 import GigList from "./GigList";
 import UserContext from "../context/user-context";
 import { useNavigation } from "@react-navigation/native";
+import { useEffect } from "react";
 
 const Home = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("Manchester");
   const [gigs, setGigs] = useState([]);
   const { user } = useContext(UserContext);
   const navigation = useNavigation();
@@ -102,6 +103,10 @@ const Home = () => {
 
     navigation.navigate("GetTickets", { gig });
   };
+
+  useEffect(() => {
+    handleGigsToday(searchTerm);
+  }, []);
 
   return (
     <View>

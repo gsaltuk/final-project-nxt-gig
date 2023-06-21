@@ -16,8 +16,8 @@ const NavBar = () => {
 
     
       <Tab.Navigator>
-        <Tab.Screen name="GIGS" component={Home} />
-        <Tab.Screen name="ARTISTS" component={Artists} />
+        <Tab.Screen name="GIGS" options={{ headerShown: false }} component={Home} />
+        <Tab.Screen name="ARTISTS" options={{ headerShown: false }} component={Artists} />
         <Tab.Screen name="MESSAGES" component={Messages} />
         <Tab.Screen name="PROFILE" component={Profile} />
       </Tab.Navigator>
