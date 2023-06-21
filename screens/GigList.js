@@ -16,7 +16,7 @@ const GigList = ({ gigs }) => {
 };
 const styles = StyleSheet.create({
   giglistContainer: {
-    marginLeft: 8
+    marginLeft: 8,
     
   },
 })
