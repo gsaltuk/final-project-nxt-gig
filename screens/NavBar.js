@@ -15,7 +15,7 @@ const NavBar = () => {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconSource;
-          let iconSize = size * 1.6
+          let iconSize = size * 1.4
 
           if (route.name === 'GIGS') {
             iconSource = focused
