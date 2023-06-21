@@ -18,6 +18,10 @@ import Profile from "./screens/Profile";
 import SingleGig from "./screens/SingleGig";
 import EditProfile from "./screens/EditProfile";
 
+import OpenScreen from "./screens/OpenScreen";
+import SingleArtist from "./screens/SingleArtist";
+
+
 
 const Stack = createNativeStackNavigator();
 
@@ -31,7 +35,8 @@ export default function App() {
     <UserContext.Provider value={{ user, setUser, currentUid, setCurrentUid }}>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
+        <Stack.Screen name="Open" options={{ headerShown: false }} component={OpenScreen}></Stack.Screen>
+          <Stack.Screen name="Welcome" options={{ headerShown: false }} component={Welcome}></Stack.Screen>
           <Stack.Screen name="Login" component={LoginForm}></Stack.Screen>
           <Stack.Screen
             name="Signup-Form"
@@ -42,9 +47,10 @@ export default function App() {
             name="Home"
             component={NavBar}
           ></Stack.Screen>
-          <Stack.Screen name="SingleGig" component={SingleGig}></Stack.Screen>
+          <Stack.Screen name="SingleGig" options={{ headerShown: false }} component={SingleGig}></Stack.Screen>
           <Stack.Screen
             name="SetupProfile"
+            options={{ headerShown: false }}
             component={SetupProfile}
           ></Stack.Screen>
         <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
@@ -52,7 +58,9 @@ export default function App() {
           <Stack.Screen name="Messages" component={Messages}></Stack.Screen>
           <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
           <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
-          
+
+          <Stack.Screen name="SingleArtist"  component={SingleArtist}></Stack.Screen>
+
         </Stack.Navigator>
       </NavigationContainer>
 

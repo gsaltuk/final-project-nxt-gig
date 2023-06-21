@@ -1,10 +1,17 @@
 import React from "react";
-import { View, Image, Text } from "react-native";
+import { View, Image, Text, TouchableOpacity } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import gigCardStyles from "../styles/gigCardStyles";
 
-
 const GigCard = ({ gig }) => {
+  const navigation = useNavigation();
+
+  const handleGigPress = () => {
+    navigation.navigate('SingleGig', { gig: gig });
+  };
+
   return (
+    <TouchableOpacity onPress={handleGigPress}>
     <View style={gigCardStyles.container}>
       <Image source={{ uri: gig.imageURL }} style={gigCardStyles.image} />
       <View style={gigCardStyles.textContainer}>
@@ -13,6 +20,7 @@ const GigCard = ({ gig }) => {
         <Text style={gigCardStyles.timeText}>{gig.time}</Text>
       </View>
     </View>
+    </TouchableOpacity>
   );
 };
 

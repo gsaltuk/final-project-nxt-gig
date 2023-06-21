@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useContext, useState, useEffect } from "react";
 import UserContext from "../context/user-context";
+import styles from '../styles/messagingStyle';
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "./SetupProfile";
 
@@ -24,7 +25,7 @@ const Message = ({ message, user, recipient }) => {
         <Text style={textStyle}>{message.senderId.toUpperCase()}</Text>
         <Text style={styles.messageContent}>{message.content}</Text>
       </View>
-    </View>
+
   );
 };
 

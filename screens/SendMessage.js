@@ -1,3 +1,4 @@
+import styles from "../styles/messagingStyle";
 import {
   TouchableOpacity,
   TextInput,

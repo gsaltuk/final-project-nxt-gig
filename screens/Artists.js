@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Image, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import defaultImage from "../assets/artwork-unavailable.png";
+import { Link } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import styles from "../styles/styles";
+import { stylesHome } from "../styles/styleHomePage";
 
 export default function Artists() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -8,6 +19,7 @@ export default function Artists() {
   const [searchedArtists, setSearchedArtists] = useState([]);
   const [artistImages, setArtistImages] = useState({});
   const apiKey = "374a714c7bfd22d920627a094682d88d";
+  const navigation = useNavigation();
 
   useEffect(() => {
     fetch(
@@ -87,22 +99,31 @@ export default function Artists() {
   };
 
   const renderArtistItem = ({ item }) => (
-    <View style={{ flex: 1, alignItems: "center", margin: 10 }}>
-      <Text>{item.name}</Text>
-      <Image
-        source={{ uri: getImage(item) }}
-        style={{ width: 100, height: 100, borderRadius: 50 }}
-      />
-    </View>
+    <TouchableOpacity onPress={() => navigateToSingleArtist(item)}>
+      <View style={{ flex: 1, alignItems: "center", margin: 10 }}>
+        <Text>{item.name}</Text>
+        {/* <Link to={{screen: "SingleArtist"}}>Browse Artist</Link> */}
+        <Image
+          source={{ uri: getImage(item) }}
+          style={{ width: 100, height: 100, borderRadius: 50 }}
+        />
+      </View>
+    </TouchableOpacity>
   );
 
+  const navigateToSingleArtist = (artist) => {
+    navigation.navigate("SingleArtist", { artist });
+  };
+
   return (
-    <View>
+    <View style={stylesHome.container}>
+      <View style={stylesHome.searchContainer}>
       <TextInput
         placeholder="Search artist"
         value={searchQuery}
+        style={stylesHome.input}
         onChangeText={(text) => searchArtist(text)}
-      />
+      /></View>
       {searchQuery.length === 0 && (
         <FlatList
           data={artists}

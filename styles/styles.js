@@ -6,8 +6,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffffff", // Set the background color of the container
-    
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
+
   buttonContainer: {
     width: "75%",
     justifyContent: "center",
@@ -31,9 +33,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginTop: 5,
     borderRadius: 7,
-    borderWidth:1,
+    borderWidth: 1,
     borderColor: "#eee",
-    width:330,
+    width: 330,
     height: 40,
   },
   text: {
@@ -46,7 +48,40 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 10,
   },
+  artistName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  artistImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+  },
+  songPreview: {
+    width: 300,
+    height: 40,
+    marginBottom: 10,
+  },
+  songPreviewText: {
+    marginBottom: 10,
+  },
+  addToFavoritesButton: {
+    backgroundColor: "lightblue",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  addToFavoritesButtonText: {
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  artistBio: {
+    marginBottom: 20,
+  },
+  artistContainer: {
+    marginTop: 75,
+  },
 });
-
 
 export default styles;
