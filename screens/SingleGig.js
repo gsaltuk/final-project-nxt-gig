@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { useRoute, Link } from "@react-navigation/native";
 import { Linking, Alert } from "react-native";
 
 import { firebase } from "../backend/firebase-config";
@@ -8,32 +14,32 @@ import {
   collection,
   query,
   doc,
-  setDoc,
   where,
-  addDoc,   
+  addDoc,
   onSnapshot,
   getFirestore,
   updateDoc,
 } from "firebase/firestore";
 import useLoggedInUser from "../backend/firebase-auth";
+
 const db = getFirestore(firebase);
 
 const SingleGig = () => {
   const [isFavouriteGig, setisFavouriteGig] = useState(false);
-  const [interestedListId, setInterestedListId] = useState('');
+  const [interestedListId, setInterestedListId] = useState("");
   const [interestedUsers, setInterestedUsers] = useState([]);
   const loggedUser = useLoggedInUser();
   const loggedUserName = loggedUser?.username;
 
   const route = useRoute();
   const { gig } = route.params || {};
-  
+
   useEffect(() => {
     if (!loggedUserName) return;
-  
+
     const colRef = collection(db, "interested");
     const q = query(colRef, where("GIG_ID", "==", gig.id));
-  
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       let hasData = false;
       snapshot.forEach((doc) => {
@@ -44,7 +50,7 @@ const SingleGig = () => {
           setInterestedUsers(data.USERS);
         }
       });
-  
+
       if (!hasData) {
         addDoc(collection(db, "interested"), {
           GIG_ID: gig.id,
@@ -52,14 +58,12 @@ const SingleGig = () => {
         });
       }
     });
-  
+
     return () => unsubscribe();
   }, [gig.id, loggedUserName]);
-  
 
   const handleFavouriteGig = async () => {
     try {
-      
       const isAlreadyInterested = interestedUsers.includes(loggedUserName);
       if (isAlreadyInterested) {
         const updatedInterestedUsers = interestedUsers.filter(
@@ -72,7 +76,6 @@ const SingleGig = () => {
         setisFavouriteGig(false);
         Alert.alert("Deleted from your favourites");
       } else {
-
         const interestedDocRef = doc(db, "interested", interestedListId);
         await updateDoc(interestedDocRef, {
           USERS: [...interestedUsers, loggedUserName],
@@ -86,43 +89,50 @@ const SingleGig = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: gig.imageURL }}
-          style={styles.image}
-          resizeMode="contain"
-        />
+    <>
+      <View style={styles.container}>
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: gig.imageURL }}
+            style={styles.image}
+            resizeMode="contain"
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            onPress={handleFavouriteGig}
+            style={[
+              styles.addFavouriteGig,
+              isFavouriteGig
+                ? { backgroundColor: "red" }
+                : { backgroundColor: "#fc038c" },
+            ]}
+          >
+            <Text style={styles.addFavouriteGig}>
+              {isFavouriteGig ? "Remove from favourites" : "Add to favourites"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Share</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              Linking.openURL(`${gig.ticket}`);
+            }}
+          >
+            <Text style={styles.buttonText}>Get Tickets</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.artistText}>{gig.artist}</Text>
+        <Text style={styles.venueText}>{gig.venue}</Text>
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={handleFavouriteGig}
-          style={[
-            styles.addFavouriteGig,
-            isFavouriteGig
-              ? { backgroundColor: 'red' }
-              : { backgroundColor: "#fc038c" },
-          ]}
-        >
-          <Text style={styles.addFavouriteGig}>
-            {isFavouriteGig ? "Remove from favourites" : "Add to favourites"}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Share</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            Linking.openURL(`${gig.ticket}`);
-          }}
-        >
-          <Text style={styles.buttonText}>Get Tickets</Text>
-        </TouchableOpacity>
+      <View >
+        {interestedUsers.map((interestedUser) => (
+          <Link to={""}>{interestedUser}</Link>
+        ))}
       </View>
-      <Text style={styles.artistText}>{gig.artist}</Text>
-      <Text style={styles.venueText}>{gig.venue}</Text>
-    </View>
+    </>
   );
 };
 
