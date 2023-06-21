@@ -30,7 +30,7 @@ const Message = ({ message, user, recipient }) => {
 
 const styles = StyleSheet.create({
   messageContainer: {
-    width: "90%",
+    width: "100%",
     alignSelf: "center",
     backgroundColor: "#F2F2F2",
     borderRadius: 10,

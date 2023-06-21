@@ -1,13 +1,15 @@
-import { TouchableOpacity, TextInput, View, Text, StyleSheet } from "react-native";
-import React, { useState } from "react";
 import {
-  collection,
-  addDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+  TouchableOpacity,
+  TextInput,
+  View,
+  Text,
+  StyleSheet,
+} from "react-native";
+import React, { useState } from "react";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../backend/firebase-config";
 
-const SendMessage = ({ user, convRef, recipient }) => {
+const SendMessage = ({ user, convRef, recipient, setMessages }) => {
   const [inputMessage, setInputMessage] = useState("");
 
   const handleSendMessage = async () => {
@@ -17,13 +19,16 @@ const SendMessage = ({ user, convRef, recipient }) => {
     }
 
     try {
-      await addDoc(collection(convRef, "messages"), {
+      const newMessage = {
         content: inputMessage,
         senderId: user.username,
         createdAt: serverTimestamp(),
-      });
+      };
 
-      setInputMessage(""); 
+      await addDoc(collection(convRef, "messages"), newMessage);
+      setInputMessage("");
+
+      setMessages((prevMessages) => [...prevMessages, newMessage]); // Update the messages state with the new message
     } catch (error) {
       console.error("Error sending message:", error);
     }

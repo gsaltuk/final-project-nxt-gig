@@ -9,8 +9,10 @@ import { db } from "../backend/firebase-config";
 const Conversation = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const { recipient, user } = route.params;
-  const [conversationRef, setConversationRef] = useState(null); // Initialize conversation reference as null
-
+  const [conversationRef, setConversationRef] = useState(null); //
+console.log(messages)
+console.log(user)
+console.log(recipient)
   useEffect(() => {
     if (!user) return;
 
@@ -52,7 +54,7 @@ const Conversation = ({ route }) => {
     };
 
     fetchMessages();
-  }, [user, recipient]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -66,7 +68,7 @@ const Conversation = ({ route }) => {
           />
         ))}
       </ScrollView>
-      <SendMessage user={user} convRef={conversationRef} recipient={recipient} />
+      <SendMessage user={user} convRef={conversationRef} recipient={recipient} setMessages={setMessages} />
     </View>
   );
 };
