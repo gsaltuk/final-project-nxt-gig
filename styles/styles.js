@@ -86,6 +86,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     resizeMode: "cover",
   },
+  selectedImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+  },
   
 });
 

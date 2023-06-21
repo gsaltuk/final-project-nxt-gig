@@ -6,28 +6,28 @@ import {
   Button,
   KeyboardAvoidingView,
   Platform,
-  Image,
+  Alert,
 } from "react-native";
-import { firebase } from "../backend/firebase-config";
-import styles from "../styles/styles";
 import {
   getFirestore,
   collection,
   addDoc,
-} from "firebase/firestore"; 
-import { serverTimestamp } from "firebase/firestore"; 
-import UserContext from "../context/user-context";
-import * as ImagePicker from 'expo-image-picker';
-import { getStorage, ref, uploadString, getDownloadURL } from "@firebase/storage";
+  serverTimestamp,
+  doc,
+  updateDoc,
+} from "@firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "@firebase/storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import * as FileSystem from 'expo-file-system'; 
-import { Buffer } from 'buffer'; // Import the Buffer class for base64 encoding
+import * as ImagePicker from "expo-image-picker";
+import UserContext from "../context/user-context";
+import { firebase, storage, auth } from "../backend/firebase-config";
+import styles from "../styles/styles";
 
 export const db = getFirestore();
-const storage = getStorage();
+
+
 
 export default function SetupProfile({ navigation }) {
-  const [response, setResponse] = useState(null); // Store the selected image
   const [formData, setFormData] = useState({
     username: "",
     firstName: "",
@@ -37,9 +37,8 @@ export default function SetupProfile({ navigation }) {
     bio: "",
   });
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
   const { user } = useContext(UserContext);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleInputChange = (field, value) => {
     setFormData((prevState) => ({
@@ -57,8 +56,69 @@ export default function SetupProfile({ navigation }) {
   };
 
   const showDatepicker = () => {
-    setShowDatePicker(true); // Show the date picker
+    setShowDatePicker(true);
   };
+
+  const getBlobFroUri = async (uri) => {
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function () {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+    });
+
+    return blob;
+  };
+
+  const handlePhotoUpload = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        Alert.alert(
+          "Permission denied",
+          "You need to grant camera roll permission to upload a photo."
+        );
+        return;
+      }
+  
+      const pickerResult = await ImagePicker.launchImageLibraryAsync();
+      console.log("pickerResult:", pickerResult);
+  
+      if (!pickerResult.canceled && pickerResult.assets.length > 0) {
+        const selectedAssetUri = pickerResult.assets[0].uri;
+        console.log("selectedAssetUri:", selectedAssetUri);
+  
+        const imageBlob = await getBlobFroUri(selectedAssetUri);
+        console.log("imageBlob:", imageBlob);
+  
+        if (imageBlob) {
+          const fileRef = ref(storage, `profilePictures/${Date.now()}`);
+          console.log("fileRef:", fileRef);
+  
+          await uploadBytes(fileRef, imageBlob);
+          console.log("File uploaded successfully");
+  
+          const fileUrl = await getDownloadURL(fileRef);
+          console.log("fileUrl:", fileUrl);
+  
+          await updateDoc(doc(db, "users", user.user.uid), {
+            avatarIMG: fileUrl,
+          });
+          console.log("User document updated successfully");
+        }
+      }
+    } catch (error) {
+      console.log("Error in handlePhotoUpload:", error.message);
+    }
+  };
+  
+
 
   // Collection reference
   const colRef = collection(db, "users");
@@ -66,67 +126,27 @@ export default function SetupProfile({ navigation }) {
   // Real-time collection data
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    if (response) {
-      try {
-        const storageRef = ref(storage, `profilePhotos/${user.user.uid}`);
-        const bufferImage = Buffer.from(response, 'base64'); // Convert base64 string to buffer
-        await uploadString(storageRef, bufferImage.toString('base64'), 'base64'); // Upload the base64 string
-  
-        const downloadURL = await getDownloadURL(storageRef);
-  
-        await addDoc(colRef, {
-          ...formData,
-          created_at: serverTimestamp(),
-          "fav-artists": [],
-          uid: user.user.uid,
-          photoURL: downloadURL,
-        });
-  
-        setFormData({
-          username: "",
-          firstName: "",
-          lastName: "",
-          dob: new Date(),
-          city: "",
-          bio: "",
-        });
-  
-        navigation.navigate("Home");
-      } catch (error) {
-        console.error("Error adding document: ", error);
-      }
-    } else {
-      console.log("No photo selected");
-    }
-  };
-  
-  const handlePhotoUpload = async () => {
+
     try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
+      await addDoc(colRef, {
+        ...formData,
+        created_at: serverTimestamp(),
+        "fav-artists": [],
+        uid: user.user.uid,
       });
-  
-      if (!result.canceled && result.assets.length > 0) {
-        const selectedAsset = result.assets[0]; // Access the first selected asset
-  
-        if (selectedAsset.hasOwnProperty("uri")) {
-          const base64Image = await FileSystem.readAsStringAsync(selectedAsset.uri, {
-            encoding: FileSystem.EncodingType.Base64,
-          });
-  
-          setResponse(base64Image);
-        } else {
-          console.log("Selected asset doesn't have the expected structure");
-        }
-      } else {
-        console.log("No photo selected");
-      }
+
+      setFormData({
+        username: "",
+        firstName: "",
+        lastName: "",
+        dob: new Date(),
+        city: "",
+        bio: "",
+      });
+
+      navigation.navigate("Home");
     } catch (error) {
-      console.log('Error selecting photo:', error);
+      console.error("Error adding document: ", error);
     }
   };
 
@@ -137,8 +157,7 @@ export default function SetupProfile({ navigation }) {
     >
       <View style={styles.container}>
         <Text style={styles.text}>Setup Form Here</Text>
-        <Button title="Choose Photo" onPress={handlePhotoUpload} />
-        {response && <Image source={{ uri: `data:image/jpeg;base64,${response}` }} style={styles.image} />}
+        <Button title="Upload Photo" onPress={handlePhotoUpload} />
         <TextInput
           style={styles.input}
           placeholder="Username"
