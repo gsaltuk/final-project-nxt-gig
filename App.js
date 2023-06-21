@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import { Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -20,6 +19,7 @@ import EditProfile from "./screens/EditProfile";
 
 import OpenScreen from "./screens/OpenScreen";
 import SingleArtist from "./screens/SingleArtist";
+import { StatusBar } from "react-native";
 
 
 
@@ -33,6 +33,7 @@ export default function App() {
   return (
 
     <UserContext.Provider value={{ user, setUser, currentUid, setCurrentUid }}>
+      <StatusBar barStyle="light-content" />
       <NavigationContainer>
         <Stack.Navigator>
         <Stack.Screen name="Open" options={{ headerShown: false }} component={OpenScreen}></Stack.Screen>
@@ -47,7 +48,7 @@ export default function App() {
             name="Home"
             component={NavBar}
           ></Stack.Screen>
-          <Stack.Screen name="SingleGig" options={{ headerShown: false }} component={SingleGig}></Stack.Screen>
+          <Stack.Screen name="SingleGig"  component={SingleGig}></Stack.Screen>
           <Stack.Screen
             name="SetupProfile"
             options={{ headerShown: false }}

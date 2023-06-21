@@ -48,10 +48,11 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   imageContainer: {
-    width: "100%",
+    width: "160%",
     alignItems: "center",
     justifyContent: "center",
     aspectRatio: 1,
+    marginTop: -165
   },
   image: {
     flex: 1,
