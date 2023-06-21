@@ -36,7 +36,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator>
         <Stack.Screen name="Open" options={{ headerShown: false }} component={OpenScreen}></Stack.Screen>
-          <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
+          <Stack.Screen name="Welcome" options={{ headerShown: false }} component={Welcome}></Stack.Screen>
           <Stack.Screen name="Login" component={LoginForm}></Stack.Screen>
           <Stack.Screen
             name="Signup-Form"
@@ -50,6 +50,7 @@ export default function App() {
           <Stack.Screen name="SingleGig" options={{ headerShown: false }} component={SingleGig}></Stack.Screen>
           <Stack.Screen
             name="SetupProfile"
+            options={{ headerShown: false }}
             component={SetupProfile}
           ></Stack.Screen>
         <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
@@ -58,7 +59,7 @@ export default function App() {
           <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
           <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
 
-          <Stack.Screen name="SingleArtist" component={SingleArtist}></Stack.Screen>
+          <Stack.Screen name="SingleArtist"  component={SingleArtist}></Stack.Screen>
 
         </Stack.Navigator>
       </NavigationContainer>

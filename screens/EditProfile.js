@@ -32,6 +32,8 @@ export default function EditProfile({navigation}) {
     }))
 }
 
+
+
 const handleEditSubmit = async (e) => {
     e.preventDefault();
 
