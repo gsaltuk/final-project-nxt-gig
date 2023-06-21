@@ -14,13 +14,14 @@ import {
   getFirestore,
   collection,
   addDoc,
-  serverTimestamp,
-} from "@firebase/firestore";
+} from "firebase/firestore"; 
+import { serverTimestamp } from "firebase/firestore"; 
 import UserContext from "../context/user-context";
 import * as ImagePicker from 'expo-image-picker';
 import { getStorage, ref, uploadString, getDownloadURL } from "@firebase/storage";
-import * as FileSystem from 'expo-file-system';
 import DateTimePicker from "@react-native-community/datetimepicker";
+import * as FileSystem from 'expo-file-system'; 
+import { Buffer } from 'buffer'; // Import the Buffer class for base64 encoding
 
 export const db = getFirestore();
 const storage = getStorage();
@@ -31,11 +32,11 @@ export default function SetupProfile({ navigation }) {
     username: "",
     firstName: "",
     lastName: "",
-    dob: null, // Initialize as null
+    dob: null,
     city: "",
     bio: "",
   });
-  
+
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const { user } = useContext(UserContext);
@@ -54,24 +55,23 @@ export default function SetupProfile({ navigation }) {
       dob: currentDate ? currentDate.getTime() : null,
     }));
   };
-  
-  
 
   const showDatepicker = () => {
     setShowDatePicker(true); // Show the date picker
   };
 
-  // collection ref
+  // Collection reference
   const colRef = collection(db, "users");
 
-  // real-time collection data
+  // Real-time collection data
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     if (response) {
       try {
         const storageRef = ref(storage, `profilePhotos/${user.user.uid}`);
-        await uploadString(storageRef, response, "base64"); // Upload the base64 string
+        const bufferImage = Buffer.from(response, 'base64'); // Convert base64 string to buffer
+        await uploadString(storageRef, bufferImage.toString('base64'), 'base64'); // Upload the base64 string
   
         const downloadURL = await getDownloadURL(storageRef);
   
@@ -101,8 +101,6 @@ export default function SetupProfile({ navigation }) {
     }
   };
   
-
-
   const handlePhotoUpload = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -111,24 +109,26 @@ export default function SetupProfile({ navigation }) {
         aspect: [1, 1],
         quality: 1,
       });
-      
-      console.log(result);
-
-      
-      if (!result.canceled) {
-        const base64Image = await FileSystem.readAsStringAsync(result.uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
   
-        setResponse(base64Image); // Store the selected photo as a base64 string
+      if (!result.canceled && result.assets.length > 0) {
+        const selectedAsset = result.assets[0]; // Access the first selected asset
+  
+        if (selectedAsset.hasOwnProperty("uri")) {
+          const base64Image = await FileSystem.readAsStringAsync(selectedAsset.uri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+  
+          setResponse(base64Image);
+        } else {
+          console.log("Selected asset doesn't have the expected structure");
+        }
+      } else {
+        console.log("No photo selected");
       }
     } catch (error) {
       console.log('Error selecting photo:', error);
     }
   };
-  
-  
-  
 
   return (
     <KeyboardAvoidingView
@@ -138,7 +138,7 @@ export default function SetupProfile({ navigation }) {
       <View style={styles.container}>
         <Text style={styles.text}>Setup Form Here</Text>
         <Button title="Choose Photo" onPress={handlePhotoUpload} />
-        {response && <Image source={{ uri: response.uri }} style={styles.image} />}
+        {response && <Image source={{ uri: `data:image/jpeg;base64,${response}` }} style={styles.image} />}
         <TextInput
           style={styles.input}
           placeholder="Username"
@@ -173,13 +173,12 @@ export default function SetupProfile({ navigation }) {
           <Button title="Select Date of Birth" onPress={showDatepicker} />
           {showDatePicker && (
             <DateTimePicker
-            testID="dateTimePicker"
-            value={formData.dob ? new Date(formData.dob) : new Date()} // Convert timestamp to Date object
-            mode="date"
-            display="default"
-            onChange={handleDateChange}
-          />
-          
+              testID="dateTimePicker"
+              value={formData.dob ? new Date(formData.dob) : new Date()} // Convert timestamp to Date object
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
           )}
         </View>
         <Button title="Submit" onPress={handleSubmit} />

@@ -6,6 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import UserContext from "./context/user-context";
 
+
 import Conversation from "./screens/Conversation";
 import Welcome from "./screens/Welcome";
 import LoginForm from "./screens/Login";
@@ -20,7 +21,6 @@ import EditProfile from "./screens/EditProfile";
 
 import OpenScreen from "./screens/OpenScreen";
 import SingleArtist from "./screens/SingleArtist";
-
 
 
 const Stack = createNativeStackNavigator();
