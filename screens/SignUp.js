@@ -50,7 +50,7 @@ export default function SignUpForm({ navigation }) {
           secureTextEntry
         />
         <TouchableOpacity onPress={handleSignup} style={styles.button}>
-          <Text style={styles.buttonText}>SIGN UP</Text>
+          <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fc038c",
     paddingHorizontal: 75,
     paddingVertical: 7,
     borderRadius: 5,
@@ -83,7 +83,9 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     width: 120,
-    textAlign: 'center'
+    textAlign: "center",
+    color: 'white',
+    fontWeight: 'bold',
   },
   input: {
     backgroundColor: '#EDEDED',

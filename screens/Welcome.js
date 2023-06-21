@@ -19,7 +19,7 @@ export default function Welcome({ navigation }) {
           onPress={() => navigation.navigate("Signup-Form")}
           style={styles.button}
         >
-          <Text style={styles.buttonText}>Signup</Text>
+          <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fc038c",
     paddingHorizontal: 75,
     paddingVertical: 7,
     borderRadius: 5,
@@ -51,7 +51,9 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     width: 120,
-    textAlign: 'center'
+    textAlign: "center",
+    color: 'white',
+    fontWeight: 'bold',
   },
   image: {
     width: '80%',

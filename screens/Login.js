@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fc038c",
     paddingHorizontal: 75,
     paddingVertical: 7,
     borderRadius: 5,
@@ -99,6 +99,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     width: 120,
     textAlign: "center",
+    color: 'white',
+    fontWeight: 'bold',
   },
   input: {
     backgroundColor: "#EDEDED",
