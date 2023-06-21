@@ -80,6 +80,13 @@ const styles = StyleSheet.create({
   artistBio: {
     marginBottom: 20,
   },
+  image: {
+    width: 200, 
+    height: 200,
+    marginTop: 10,
+    resizeMode: "cover",
+  },
+  
 });
 
 
