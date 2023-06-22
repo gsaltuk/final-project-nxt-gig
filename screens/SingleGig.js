@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textTransform: "uppercase",
     color: "white",
-    fontWeight: "bold",
     textAlign: "center",
   },
   header: {

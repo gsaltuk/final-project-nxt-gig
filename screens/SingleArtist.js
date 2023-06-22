@@ -211,9 +211,6 @@ export default function SingleArtist({ route, navigation }) {
 
   return (
     <>
-       
-    <ScrollView>
-    
       <View style={styles.container}>
       <TouchableOpacity
         style={styles.header}
@@ -281,11 +278,13 @@ export default function SingleArtist({ route, navigation }) {
                 {isFavorite ? "Remove from favorites" : "Add to favorites"}
               </Text>
             </TouchableOpacity>
+            <ScrollView>
             <Text style={styles.artistBio}>{artistBio}</Text>
+            </ScrollView>
           </View>
         )}
       </View>
-    </ScrollView>
+    
     </>
   );
 }
@@ -383,10 +382,11 @@ const styles = StyleSheet.create({
     color: 'white',
     maxWidth: 400,
     textAlign: 'center',
-    alignSelf: 'center' 
+    alignSelf: 'center' ,
+    marginTop: 10
   },
   artistContainer: {
-    marginTop: 75,
+    marginTop: 60,
   },
   header: {
     position: "absolute",
