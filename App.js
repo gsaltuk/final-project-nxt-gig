@@ -53,7 +53,7 @@ export default function App() {
             name="Home"
             component={NavBar}
           ></Stack.Screen>
-          <Stack.Screen name="SingleGig" component={SingleGig}></Stack.Screen>
+          <Stack.Screen name="SingleGig" options={{ headerShown: false }} component={SingleGig}></Stack.Screen>
           <Stack.Screen
             name="SetupProfile"
             options={{ headerShown: false }}
