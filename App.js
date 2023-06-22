@@ -66,13 +66,13 @@ export default function App() {
           <Stack.Screen name="Artists" component={Artists}></Stack.Screen>
           <Stack.Screen name="Messages" component={Messages}></Stack.Screen>
           <Stack.Screen
-            options={{ headerShown: false }}
             name="Profile"
             component={Profile}
           ></Stack.Screen>
           <Stack.Screen
             name="EditProfile"
             component={EditProfile}
+            options={{ headerShown: false }}
           ></Stack.Screen>
 
           <Stack.Screen
