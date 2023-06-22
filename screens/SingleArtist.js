@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  StyleSheet,
 } from "react-native";
 import { Video } from "expo-av";
 import { Ionicons } from "@expo/vector-icons";
-import styles from "../styles/styles";
 import {
   getFirestore,
   query,
@@ -22,8 +22,9 @@ import {
 } from "@firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { firebase } from "../backend/firebase-config";
+import Icon from "react-native-vector-icons/FontAwesome";
 
-export default function SingleArtist({ route }) {
+export default function SingleArtist({ route, navigation }) {
   const [artist, setArtist] = useState(null);
   const [artistImage, setArtistImage] = useState(null);
   const [artistBio, setArtistBio] = useState("");
@@ -60,10 +61,9 @@ export default function SingleArtist({ route }) {
         console.error("Error getting user profile:", error);
       }
     );
-  
+
     return () => unsubscribe();
   }, []);
-  
 
   useEffect(() => {
     if (artist) {
@@ -95,7 +95,7 @@ export default function SingleArtist({ route }) {
         console.log("Error while fetching artist details:", error);
       });
   };
-  
+
   const fetchArtistImage = (artist) => {
     fetch(
       `https://api.deezer.com/search/artist?q=${encodeURIComponent(
@@ -117,13 +117,10 @@ export default function SingleArtist({ route }) {
         console.log("Error occurred:", error);
       });
   };
-  
 
   const fetchSongPreview = (artist) => {
     fetch(
-      `https://api.deezer.com/search/track?q=${encodeURIComponent(
-        artist.name
-      )}`
+      `https://api.deezer.com/search/track?q=${encodeURIComponent(artist.name)}`
     )
       .then((res) => res.json())
       .then(({ data }) => {
@@ -145,27 +142,27 @@ export default function SingleArtist({ route }) {
       if (userProfileInfo) {
         const favoriteArtists = userProfileInfo["fav-artists"];
         const isAlreadyFavorite = favoriteArtists.includes(artist.name);
-  
+
         if (isAlreadyFavorite) {
           const updatedFavoriteArtists = favoriteArtists.filter(
             (favArtist) => favArtist !== artist.name
           );
-  
+
           const docRef = doc(db, "users", userProfileInfo.id);
           await updateDoc(docRef, {
             "fav-artists": updatedFavoriteArtists,
           });
-  
+
           setIsFavorite(false);
-          Alert.alert("Removed from favorites!");
+    
         } else {
           const docRef = doc(db, "users", userProfileInfo.id);
           await updateDoc(docRef, {
             "fav-artists": [...favoriteArtists, artist.name],
           });
-  
+
           setIsFavorite(true);
-          Alert.alert("Added to favorites!");
+    
         }
       }
     } catch (error) {
@@ -213,8 +210,14 @@ export default function SingleArtist({ route }) {
   }, [userProfileInfo, artist]);
 
   return (
-    <ScrollView>
+    <>
       <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.header}
+        onPress={() => navigation.goBack()}
+      >
+        <Icon name="chevron-left" size={30} color="white" />
+      </TouchableOpacity>
         {artist && (
           <View>
             <Text style={styles.artistName}>{artist.name}</Text>
@@ -234,7 +237,7 @@ export default function SingleArtist({ route }) {
                 <Video
                   ref={videoRef}
                   source={{ uri: songPreview }}
-                  shouldPlay={true}
+                  shouldPlay={isPlaying}
                   isLooping
                   style={styles.songPreview}
                 />
@@ -248,7 +251,7 @@ export default function SingleArtist({ route }) {
                   <Ionicons
                     name={isPlaying ? "pause" : "play"}
                     size={24}
-                    color="#ffffff"
+                    color="white"
                   />
                 </TouchableOpacity>
               </View>
@@ -261,17 +264,138 @@ export default function SingleArtist({ route }) {
               onPress={handleFavoriteArtist}
               style={[
                 styles.addToFavoritesButton,
-                isFavorite ? { backgroundColor: "red" } : { backgroundColor: "blue" },
+                isFavorite
+                  ? { backgroundColor: "white" }
+                  : { backgroundColor: "#fc038c" },
               ]}
             >
-              <Text style={styles.addToFavoritesButtonText}>
+              <Text
+                style={[
+                  styles.addToFavoritesButtonText,
+                  isFavorite ? { color: "black" } : { color: "white" },
+                ]}
+              >
                 {isFavorite ? "Remove from favorites" : "Add to favorites"}
               </Text>
             </TouchableOpacity>
+            <ScrollView>
             <Text style={styles.artistBio}>{artistBio}</Text>
+            </ScrollView>
           </View>
         )}
       </View>
-    </ScrollView>
-  );  
+    
+    </>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black", 
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+
+  buttonContainer: {
+    width: "75%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 100,
+  },
+  button: {
+    backgroundColor: "black",
+    width: "100%",
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 10,
+    color: "white",
+    textAlign: "center",
+    fontSize: 17,
+    fontWeight: "700",
+  },
+  input: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: "white",
+    marginTop: 5,
+    borderRadius: 7,
+    borderWidth: 1,
+    borderColor: "#eee",
+    width: 330,
+    height: 40,
+  },
+  text: {
+    textAlign: "center",
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    alignSelf: "center",
+    marginBottom: 10,
+  },
+  artistName: {
+    fontSize: 50,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#fc038c",
+    textAlign: 'center',
+    zIndex: 100,
+    maxWidth: '100%',
+    alignSelf: 'center',
+    marginTop: 450,
+    position: 'absolute'
+  },
+  artistImage: {
+    width: "130%",
+    height: undefined,
+    aspectRatio: 1, 
+    marginBottom: 10,
+    marginTop: 20
+  },
+  songPreview: {
+    width: 500,
+    height: 40,
+    marginBottom: 5,
+    marginTop: -5,
+  },
+  songPreviewText: {
+    marginBottom: 10,
+  },
+  addToFavoritesButton: {
+    backgroundColor: "#fc038c",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    marginTop: -80,
+  },
+  addToFavoritesButtonText: {
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "white",
+  },
+  artistBio: {
+    marginBottom: 20,
+    color: 'white',
+    maxWidth: 400,
+    textAlign: 'center',
+    alignSelf: 'center' ,
+    marginTop: 10
+  },
+  artistContainer: {
+    marginTop: 60,
+  },
+  header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 1,
+    padding: 10,
+    marginTop: 50,
+    marginLeft: 10,
+  },
+});
+
