@@ -3,6 +3,8 @@ import React, { useState, useEffect, useContext } from "react";
 import UserContext from "../context/user-context";
 import { db } from "./SetupProfile";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { getAuth, signOut } from "firebase/auth";
+import { firebase } from "../backend/firebase-config";
 
 export default function Profile({ navigation }) {
   const [userProfileInfo, setUserProfileInfo] = useState({});
@@ -25,6 +27,15 @@ export default function Profile({ navigation }) {
   function handleEdit() {
     navigation.navigate("EditProfile");
   }
+  const handleSignOut = async () => {
+    try {
+      const auth = getAuth(firebase);
+      await signOut(auth);
+      navigation.navigate("Welcome")
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -36,10 +47,13 @@ export default function Profile({ navigation }) {
         <Text style={styles.usernameText}>{userProfileInfo.username}</Text>
         <Text style={styles.text}>{userProfileInfo["firstName"]} {userProfileInfo["lastName"]}</Text>
         <Text style={styles.cityText}>{userProfileInfo.city}</Text>
-        <Text style={styles.bioText}>{userProfileInfo.bio}</Text>
+        <Text style={styles.bioText}>"{userProfileInfo.bio}"</Text>
       </View>
       <TouchableOpacity onPress={handleEdit} style={styles.button}>
         <Text style={styles.button}>EDIT PROFILE</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
+        <Text style={styles.button}>SIGN OUT</Text>
       </TouchableOpacity>
     </View>
   );
