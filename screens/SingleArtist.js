@@ -22,8 +22,9 @@ import {
 } from "@firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { firebase } from "../backend/firebase-config";
+import Icon from "react-native-vector-icons/FontAwesome";
 
-export default function SingleArtist({ route }) {
+export default function SingleArtist({ route, navigation }) {
   const [artist, setArtist] = useState(null);
   const [artistImage, setArtistImage] = useState(null);
   const [artistBio, setArtistBio] = useState("");
@@ -209,8 +210,17 @@ export default function SingleArtist({ route }) {
   }, [userProfileInfo, artist]);
 
   return (
+    <>
+       
     <ScrollView>
+    
       <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.header}
+        onPress={() => navigation.goBack()}
+      >
+        <Icon name="chevron-left" size={30} color="white" />
+      </TouchableOpacity>
         {artist && (
           <View>
             <Text style={styles.artistName}>{artist.name}</Text>
@@ -276,6 +286,7 @@ export default function SingleArtist({ route }) {
         )}
       </View>
     </ScrollView>
+    </>
   );
 }
 
@@ -335,14 +346,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     zIndex: 100,
     maxWidth: '100%',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginTop: 450,
+    position: 'absolute'
   },
   artistImage: {
     width: "130%",
     height: undefined,
     aspectRatio: 1, 
     marginBottom: 10,
-    marginTop: -100
+    marginTop: 20
   },
   songPreview: {
     width: 500,
@@ -374,6 +387,15 @@ const styles = StyleSheet.create({
   },
   artistContainer: {
     marginTop: 75,
+  },
+  header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 1,
+    padding: 10,
+    marginTop: 50,
+    marginLeft: 10,
   },
 });
 

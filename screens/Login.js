@@ -10,6 +10,7 @@ import React, { useState, useEffect, useContext } from "react";
 import UserContext from "../context/user-context";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { firebase } from "../backend/firebase-config";
+import Icon from "react-native-vector-icons/FontAwesome"; // Import the Icon component
 
 export default function LoginForm({ navigation }) {
   const { setUser, setCurrentUid } = useContext(UserContext);
@@ -46,17 +47,20 @@ export default function LoginForm({ navigation }) {
 
   return (
     <KeyboardAvoidingView style={styles.loginContainer}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="chevron-left" size={30} color="white" />
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"
-          //value=''
           onChangeText={(text) => setEmail(text)}
           style={styles.input}
         />
         <TextInput
           placeholder="Password"
-          //value=''
-
           secureTextEntry
           onChangeText={(text) => setPassword(text)}
           style={styles.input}
@@ -79,13 +83,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 1,
+    padding: 10,
+    marginTop: 50,
+    marginLeft: 10
+  },
+  inputContainer: {
+    marginTop: 50,
+  },
   buttonContainer: {
     alignItems: "center",
-  },
-  text: {
-    color: "white",
-    fontSize: 22,
-    marginBottom: 20,
   },
   button: {
     backgroundColor: "#fc038c",
@@ -99,8 +110,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     width: 120,
     textAlign: "center",
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   input: {
     backgroundColor: "#EDEDED",

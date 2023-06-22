@@ -42,9 +42,10 @@ export default function App() {
             options={{ headerShown: false }}
             component={Welcome}
           ></Stack.Screen>
-          <Stack.Screen name="Login" component={LoginForm}></Stack.Screen>
+          <Stack.Screen name="Login" options={{ headerShown: false }} component={LoginForm}></Stack.Screen>
           <Stack.Screen
             name="Signup-Form"
+            options={{ headerShown: false }}
             component={SignUpForm}
           ></Stack.Screen>
           <Stack.Screen
@@ -65,8 +66,8 @@ export default function App() {
           <Stack.Screen name="Artists" component={Artists}></Stack.Screen>
           <Stack.Screen name="Messages" component={Messages}></Stack.Screen>
           <Stack.Screen
-            name="Profile"
             options={{ headerShown: false }}
+            name="Profile"
             component={Profile}
           ></Stack.Screen>
           <Stack.Screen
@@ -77,6 +78,7 @@ export default function App() {
           <Stack.Screen
             name="SingleArtist"
             component={SingleArtist}
+            options={{ headerShown: false }}
           ></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
