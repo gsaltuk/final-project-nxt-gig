@@ -1,5 +1,8 @@
+
 import { Text, View, TouchableOpacity, Image, StyleSheet } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
+
+
 import UserContext from "../context/user-context";
 import { db } from "./SetupProfile";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
