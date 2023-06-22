@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { useRoute, Link } from "@react-navigation/native";
 import { Linking, Alert } from "react-native";
 
@@ -127,9 +121,15 @@ const SingleGig = () => {
         <Text style={styles.artistText}>{gig.artist}</Text>
         <Text style={styles.venueText}>{gig.venue}</Text>
       </View>
-      <View >
+      <View>
         {interestedUsers.map((interestedUser) => (
-          <Link to={""}>{interestedUser}</Link>
+          <Link
+          to={{ screen: "Conversation", params: { recipient: interestedUser, user: loggedUserName } }}
+          key={gig.id}
+        >
+          <Text>{interestedUser}</Text>
+        </Link>
+          
         ))}
       </View>
     </>
