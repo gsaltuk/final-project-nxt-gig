@@ -21,7 +21,7 @@ console.log(recipient)
         const conversationsRef = collection(db, "conversations");
         const q = query(
           conversationsRef,
-          where("participants", "array-contains", user.username?user.username:user)
+          where("participants", "array-contains", user.username)
         );
 
         const conversationsSnapshot = await getDocs(q);
