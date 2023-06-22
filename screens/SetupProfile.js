@@ -7,9 +7,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  StyleSheet,
+  TouchableOpacity
 } from "react-native";
 import { firebase } from "../backend/firebase-config";
-import styles from "../styles/styles";
 import {
   getFirestore,
   collection,
@@ -66,11 +67,10 @@ export default function SetupProfile({ navigation }) {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={styles.setupContainer}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.container}>
-        <Text style={styles.text}>Setup Form Here</Text>
         <TextInput
           style={styles.input}
           placeholder="Username"
@@ -107,8 +107,53 @@ export default function SetupProfile({ navigation }) {
           value={formData.bio}
           onChangeText={(value) => handleInputChange("bio", value)}
         />
-        <Button title="Submit" onPress={handleSubmit} />
       </View>
+      <View style={styles.button}>
+      <TouchableOpacity  title="Submit" onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Submit</Text>
+    
+        </TouchableOpacity>
+        </View>
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  setupContainer: {
+    flex: 1,
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonContainer: {
+    alignItems: "center",
+  },
+  text: {
+    color: "white",
+    fontSize: 22,
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: "#ffffff",
+    paddingHorizontal: 75,
+    paddingVertical: 7,
+    borderRadius: 5,
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  buttonText: {
+    fontSize: 18,
+    width: 120,
+    textAlign: 'center'
+  },
+  input: {
+    backgroundColor: '#EDEDED',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    color: '#000000',
+    width: 270, 
+    height: 40, 
+  }
+});

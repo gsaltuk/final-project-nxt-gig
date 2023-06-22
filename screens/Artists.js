@@ -5,13 +5,12 @@ import {
   TextInput,
   Image,
   FlatList,
-  TouchableOpacity,
+  TouchableOpacity, StyleSheet
 } from "react-native";
 import defaultImage from "../assets/artwork-unavailable.png";
 import { Link } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
-import styles from "../styles/styles";
-import { stylesHome } from "../styles/styleHomePage";
+
 
 export default function Artists() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,7 +63,7 @@ export default function Artists() {
   useEffect(() => {
     if (searchQuery.length === 0) {
       fetch(
-        `https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=${apiKey}&format=json&limit=9`
+        `https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=${apiKey}&format=json&limit=18`
       )
         .then((res) => res.json())
         .then((response) => {
@@ -100,12 +99,12 @@ export default function Artists() {
 
   const renderArtistItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigateToSingleArtist(item)}>
-      <View style={{ flex: 1, alignItems: "center", margin: 10 }}>
-        <Text>{item.name}</Text>
+      <View style={{ flex: 1, alignItems: "center", margin: 10,  }}>
+        <Text style={stylesHome.artistText}>{item.name}</Text>
         {/* <Link to={{screen: "SingleArtist"}}>Browse Artist</Link> */}
         <Image
           source={{ uri: getImage(item) }}
-          style={{ width: 100, height: 100, borderRadius: 50 }}
+          style={{ width: 113, height: 113, borderRadius: 60 }}
         />
       </View>
     </TouchableOpacity>
@@ -146,3 +145,78 @@ export default function Artists() {
     </View>
   );
 }
+
+const stylesHome = StyleSheet.create({
+  container: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    backgroundColor: 'black',
+    flex: 1,
+  },
+  searchContainer: {
+    marginTop: 50,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    marginRight: 8,
+    paddingHorizontal: 8,
+    color: 'white',
+    marginLeft: 8,
+    borderRadius: 4,
+  },
+  searchButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    
+  },
+  artistText: {
+    color: 'white',
+    fontWeight: 'bold',
+    },
+  searchButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  todayButton: {
+    backgroundColor: "black",
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  todayButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  tomorrowButton: {
+    backgroundColor: "black",
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    marginLeft: 8,
+  },
+  tomorrowButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+});
+

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import GigSearch from "./GigSearch";
 import GigList from "./GigList";
 import UserContext from "../context/user-context";
@@ -109,7 +109,7 @@ const Home = () => {
   }, []);
 
   return (
-    <View>
+    <View style={styles.homeContainer}>
       <GigSearch
         onSearch={handleSearch}
         onGigsToday={handleGigsToday}
@@ -122,4 +122,42 @@ const Home = () => {
   );
 };
 
+const styles = StyleSheet.create({
+  homeContainer: {
+    flex: 1,
+    backgroundColor: "black",
+
+  },
+  buttonContainer: {
+    alignItems: "center",
+  },
+  text: {
+    color: "white",
+    fontSize: 22,
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: "#ffffff",
+    paddingHorizontal: 75,
+    paddingVertical: 7,
+    borderRadius: 5,
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  buttonText: {
+    fontSize: 18,
+    width: 120,
+    textAlign: 'center'
+  },
+  input: {
+    backgroundColor: '#EDEDED',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    color: '#000000',
+    width: 270, 
+    height: 40, 
+  }
+});
 export default Home;

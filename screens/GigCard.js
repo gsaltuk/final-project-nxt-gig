@@ -1,7 +1,6 @@
 import React from "react";
-import { View, Image, Text, TouchableOpacity } from "react-native";
+import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import gigCardStyles from "../styles/gigCardStyles";
 
 const GigCard = ({ gig }) => {
   const navigation = useNavigation();
@@ -23,5 +22,42 @@ const GigCard = ({ gig }) => {
     </TouchableOpacity>
   );
 };
+
+const gigCardStyles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    marginLeft: 16,
+    marginTop: 12, 
+    width: '90.5%',
+    borderWidth: 0.5,
+    borderColor: "white",
+  },
+  image: {
+    width: 150,
+    height: 150,
+    marginRight: 16,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  artistText: {
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 8,
+    color: 'white'
+  },
+  venueText: {
+    fontSize: 14,
+    marginBottom: 4,
+    color: 'white'
+  },
+  timeText: {
+    fontSize: 14,
+    color: 'white'
+  },
+});
+
 
 export default GigCard;
