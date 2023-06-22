@@ -23,6 +23,7 @@ import { StatusBar } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
+
 export default function App() {
   const [user, setUser] = useState("");
   const [currentUid, setCurrentUid] = useState("");
@@ -67,6 +68,7 @@ export default function App() {
           <Stack.Screen name="Messages" component={Messages}></Stack.Screen>
           <Stack.Screen
             name="Profile"
+            options={{ headerShown: false }}
             component={Profile}
           ></Stack.Screen>
           <Stack.Screen
