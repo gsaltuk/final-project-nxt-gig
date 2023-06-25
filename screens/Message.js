@@ -20,7 +20,7 @@ const Message = ({ message, user, recipient }) => {
 
   return (
     <View style={containerStyle} key={message.messageId}>
-      <View style={textContainerStyle}>
+      <View style={textContainerStyle} key={message.messageId}>
         <Text style={textStyle}>{message.senderId.toUpperCase()}</Text>
         <Text style={styles.messageContent}>{message.content}</Text>
       </View>

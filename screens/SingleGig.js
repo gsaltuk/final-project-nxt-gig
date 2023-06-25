@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
-import { useRoute, Link, useNavigation } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import { Linking, Alert } from "react-native";
 
 import { firebase } from "../backend/firebase-config";
@@ -29,9 +29,14 @@ const SingleGig = () => {
 
   const route = useRoute();
   const { gig } = route.params || {};
-    console.log(gig, "gig");
+
   const navigation = useNavigation();
 
+  const handleInterestedUserPress = (interestedUser) => {
+    if (loggedUserName !==  interestedUser){
+    navigation.navigate('Conversation', { recipient: interestedUser, user: loggedUserName });
+  }
+  };
 
   useEffect(() => {
     if (!loggedUserName) return;
@@ -88,7 +93,16 @@ const SingleGig = () => {
   };
 
   return (
-    <>
+    
+    <View style={styles.container}>
+
+      <TouchableOpacity
+        style={styles.header}
+        onPress={() => navigation.goBack()}
+      >
+        <Icon name="chevron-left" size={30} color="white" />
+      </TouchableOpacity>
+    
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           <Image
@@ -128,56 +142,19 @@ const SingleGig = () => {
       </View>
       <View>
         {interestedUsers.map((interestedUser) => (
-          <Link
-          to={{ screen: "Conversation", params: { recipient: interestedUser, user: loggedUserName } }}
-          key={gig.id}
-
-
-
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.header}
-        onPress={() => navigation.goBack()}
-      >
-        <Icon name="chevron-left" size={30} color="white" />
-      </TouchableOpacity>
-
-      <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: gig.imageURL }}
-          style={styles.image}
-          resizeMode="contain"
-        />
-      </View>
-
-      <View style={styles.textContainer}>
-        <Text style={styles.artistText}>{gig.artist}</Text>
-        <Text style={styles.venueText}>{gig.venue}</Text>
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Interested</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            Linking.openURL(`${gig.ticket}`);
-          }}
-        >
-          <Text>{interestedUser}</Text>
-        </Link>
+          <TouchableOpacity onPress={(interestedUser)=>handleInterestedUserPress(interestedUser)} key={interestedUser}>
+          <Text style={styles.artistText}>{interestedUser}</Text>
+          
+          </TouchableOpacity>
           
         ))}
-      </View>
 
-    </>
+      </View>
 
     </View>
 
-  );
+  )
+  
 };
 
 const { height, width } = Dimensions.get("window");
